@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { BLOG_CATEGORIES, PAGE_OPTIONS } from "./presets";
+import { BLOG_CATEGORIES, FAQ_CATEGORIES, PAGE_OPTIONS } from "./presets";
 
 export const service = defineType({
   name: "service",
@@ -73,6 +73,7 @@ export const faq = defineType({
   fields: [
     defineField({ name: "question", type: "string", validation: (r) => r.required() }),
     defineField({ name: "answer", type: "text", rows: 5, validation: (r) => r.required() }),
+    defineField({ name: "category", type: "string", options: { list: FAQ_CATEGORIES }, description: "Tab the question appears under." }),
     defineField({ name: "pages", title: "Show on pages", type: "array", of: [defineArrayMember({ type: "string" })], options: { list: PAGE_OPTIONS } }),
     defineField({ name: "order", type: "number" }),
   ],

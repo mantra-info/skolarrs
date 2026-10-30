@@ -51,3 +51,5 @@ export const PAGE_OPTIONS = [
 ];
 
 export const BLOG_CATEGORIES = ["Abroad Study", "News", "Engineering", "Counselling"];
+
+export const FAQ_CATEGORIES = ["General", "Admission", "Application", "Visa", "Scholarship & Financial"];
