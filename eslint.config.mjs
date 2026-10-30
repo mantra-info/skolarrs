@@ -11,6 +11,10 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    // Figma assets are positioned with exact crop/inset geometry, so plain <img> is used deliberately.
+    rules: { "@next/next/no-img-element": "off" },
+  },
 ];
 
 export default eslintConfig;
