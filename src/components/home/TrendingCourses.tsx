@@ -9,7 +9,7 @@ export const TRENDING_COURSES = [
     photoBg: "linear-gradient(to bottom, #a0afd0, #687b9d)",
     photo: "/home/courses/engineering.webp",
     icon: "/home/courses/icon-engineering.svg",
-    href: "/courses/engineering",
+    href: "/study-india/engineering-and-technology",
   },
   {
     title: "Allied Health Science",
@@ -70,7 +70,7 @@ export default function TrendingCourses({ title = "Explore Trending Domestic Cou
             </Link>
           ))}
         </div>
-        <Button href="/courses/engineering" variant="secondary">
+        <Button href="/study-india" variant="secondary">
           View More Courses
         </Button>
       </div>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Faq from "@/components/Faq";
+import SiteFaq from "@/components/SiteFaq";
 import IntroPoints from "@/components/IntroPoints";
 import PageHero from "@/components/PageHero";
 import PromoBanner from "@/components/PromoBanner";
@@ -8,6 +8,9 @@ import UnlockBanner from "@/components/UnlockBanner";
 import Events from "@/components/home/Events";
 import DestinationTabs from "@/components/mbbs/DestinationTabs";
 import { ICON_EDUCATION, ICON_GLOBAL, ICON_GROWTH, ICON_INNOVATION, ICON_JOB } from "@/data/icons";
+import { sanityFetch } from "@/sanity/lib/fetch";
+import { img } from "@/sanity/lib/image";
+import { MBBS_LIST, type MbbsCard } from "@/sanity/lib/queries";
 
 export const metadata: Metadata = { title: "Study MBBS" };
 
@@ -58,7 +61,18 @@ function CompareCard({ title, points, bg, inner, map }: { title: string; points:
   );
 }
 
-export default function StudyMbbsPage() {
+export default async function StudyMbbsPage() {
+  const destinations = await sanityFetch<MbbsCard[]>({ query: MBBS_LIST, tags: ["mbbsDestination"] });
+  const cards = (region: MbbsCard["region"]) =>
+    destinations
+      .filter((d) => d.region === region)
+      .map((d) => ({
+        name: d.name,
+        image: img(d.cardImage, 800),
+        flag: d.flag ? img(d.flag) : undefined,
+        href: d.hasDetailPage ? `/study-mbbs/${d.slug}` : "/#contact",
+      }));
+
   return (
     <>
       <PageHero
@@ -95,7 +109,7 @@ export default function StudyMbbsPage() {
         </p>
       </IntroPoints>
 
-      <DestinationTabs />
+      <DestinationTabs abroad={cards("abroad")} india={cards("india")} />
 
       <UnlockBanner
         background="#227d9b"
@@ -127,7 +141,7 @@ export default function StudyMbbsPage() {
 
       <Testimonials />
       <Events />
-      <Faq />
+      <SiteFaq page="study-mbbs" />
       <PromoBanner src="/abroad/promo.webp" alt="Study Abroad — Explore. Learn. Build your future." />
     </>
   );

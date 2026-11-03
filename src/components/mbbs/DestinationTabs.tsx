@@ -3,33 +3,12 @@
 import Link from "next/link";
 import { useState } from "react";
 
-type Card = { name: string; image: string; href: string; flag?: string; crop?: string };
+export type Card = { name: string; image: string; href: string; flag?: string };
 
-const ABROAD: Card[] = [
-  { name: "Russia", image: "/mbbs/abroad/russia.webp", flag: "/mbbs/flags/russia.svg", href: "/study-mbbs/russia" },
-  { name: "Georgia", image: "/mbbs/abroad/georgia.webp", flag: "/mbbs/flags/georgia.svg", href: "/#contact" },
-  {
-    name: "Uzbekistan",
-    image: "/mbbs/abroad/uzbekistan.webp",
-    flag: "/mbbs/flags/uzbekistan.svg",
-    href: "/#contact",
-    crop: "top-[-1.84%] left-[-16%] h-[103.68%] w-[127.47%]",
-  },
-  { name: "Kyrgyzstan", image: "/mbbs/abroad/kyrgyzstan.webp", flag: "/mbbs/flags/kyrgyzstan.svg", href: "/#contact" },
-  { name: "Tajikistan", image: "/mbbs/abroad/tajikistan.webp", flag: "/mbbs/flags/tajikistan.svg", href: "/#contact" },
-  { name: "Vietnam", image: "/mbbs/abroad/vietnam.webp", flag: "/mbbs/flags/vietnam.svg", href: "/#contact" },
-  { name: "Timor-Leste", image: "/mbbs/abroad/timor-leste.webp", flag: "/mbbs/flags/timor-leste.svg", href: "/#contact" },
-];
 
-const INDIA: Card[] = [
-  { name: "Private Medical Colleges", image: "/mbbs/india/private.webp", href: "/study-mbbs/private-medical-colleges" },
-  { name: "State Private Medical Colleges", image: "/mbbs/india/state-private.webp", href: "/study-mbbs/private-medical-colleges" },
-  { name: "Deemed Universities", image: "/mbbs/india/deemed.webp", href: "/#contact" },
-];
-
-export default function DestinationTabs() {
+export default function DestinationTabs({ abroad, india }: { abroad: Card[]; india: Card[] }) {
   const [tab, setTab] = useState<"abroad" | "india">("abroad");
-  const cards = tab === "abroad" ? ABROAD : INDIA;
+  const cards = tab === "abroad" ? abroad : india;
   return (
     <section className="container-x flex flex-col items-center gap-10 py-16 md:py-20">
       <h2 className="text-center text-[1.875rem]/[2.375rem] font-semibold tracking-[-0.01875rem] text-ink md:text-h3">Find Your MBBS Study Destination</h2>
@@ -64,7 +43,7 @@ export default function DestinationTabs() {
                 loading="lazy"
                 src={c.image}
                 alt={c.name}
-                className={`absolute max-w-none transition duration-500 group-hover:scale-105 ${c.crop ?? "inset-0 size-full object-cover"}`}
+                className="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-105"
               />
             </div>
             <span className="flex items-center gap-2 text-h6 font-semibold text-ink group-hover:text-royal">

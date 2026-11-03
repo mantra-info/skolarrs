@@ -1,36 +1,8 @@
 import Button from "@/components/Button";
 import LinkArrow from "@/components/LinkArrow";
-
-const EVENTS = [
-  {
-    tag: "Nursing",
-    image: "/home/events/nursing.webp",
-    title: "Germany and Canada Nursing Admission Started - 2026",
-    body: "Attend Skolarr’s Germany and Canada nursing admission and apply for nursing 2026 - 2027",
-    cta: "Register Now",
-  },
-  {
-    tag: "Engineering",
-    image: "/home/events/engineering.webp",
-    title: "UK and Australia Engineering Enrollment Open - 2026",
-    body: "Join Skolarr’s UK and Australia engineering programs and secure your spot for 2026 - 2027",
-    cta: "Apply Today",
-  },
-  {
-    tag: "Business",
-    image: "/home/events/business.webp",
-    title: "USA and Singapore Business Courses Registration Live - 2026",
-    body: "Explore Skolarr’s USA and Singapore business courses and kickstart your career for 2026 - 2027",
-    cta: "Enroll Now",
-  },
-  {
-    tag: "Nursing",
-    image: "/home/events/nursing.webp",
-    title: "Germany and Canada Nursing Admission Started - 2026",
-    body: "Attend Skolarr’s Germany and Canada nursing admission and apply for nursing 2026 - 2027",
-    cta: "Register Now",
-  },
-];
+import { sanityFetch } from "@/sanity/lib/fetch";
+import { img } from "@/sanity/lib/image";
+import { EVENTS, type EventDoc } from "@/sanity/lib/queries";
 
 export function Chip({ children }: { children: React.ReactNode }) {
   return (
@@ -40,29 +12,36 @@ export function Chip({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function Events() {
+export default async function Events() {
+  const today = new Date().toISOString().slice(0, 10);
+  // Refreshed daily so events drop off after their end date without a publish.
+  const events = await sanityFetch<EventDoc[]>({ query: EVENTS, params: { today }, tags: ["event"], revalidate: 86400 });
+  if (!events.length) return null;
+
   return (
     <section id="events" className="overflow-hidden bg-surface py-16 md:py-20">
       <div className="container-x flex flex-col gap-12">
         <h2 className="text-center text-[1.875rem]/[2.375rem] font-bold tracking-[-0.01875rem] text-ink md:text-h3">Featured Events</h2>
         <div className="no-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto">
-          {EVENTS.map((e, i) => (
+          {events.map((e, i) => (
             <article
               key={i}
               className="flex w-[85vw] max-w-[31.6875rem] shrink-0 snap-start flex-col gap-6 rounded-3xl border-[0.5px] border-[#cecece] bg-white p-6 md:h-[39.375rem] md:w-[31.6875rem]"
             >
               <div className="relative aspect-[459/290] w-full md:aspect-auto md:flex-1">
-                <img loading="lazy" src={e.image} alt="" className="absolute inset-0 size-full rounded-2xl object-cover" />
+                <img loading="lazy" src={img(e.image, 960)} alt="" className="absolute inset-0 size-full rounded-2xl object-cover" />
               </div>
               <div className="flex flex-col gap-4">
-                <div>
-                  <Chip>{e.tag}</Chip>
-                </div>
+                {e.tag && (
+                  <div>
+                    <Chip>{e.tag}</Chip>
+                  </div>
+                )}
                 <h3 className="text-xl/7 font-medium tracking-[-0.009375rem] text-ink md:text-h5">{e.title}</h3>
               </div>
-              <p className="text-base text-ink md:text-h6">{e.body}</p>
+              <p className="text-base text-ink md:text-h6">{e.description}</p>
               <div>
-                <LinkArrow href="/#contact">{e.cta}</LinkArrow>
+                <LinkArrow href={e.cta?.href ?? "/#contact"}>{e.cta?.label ?? "Register Now"}</LinkArrow>
               </div>
             </article>
           ))}

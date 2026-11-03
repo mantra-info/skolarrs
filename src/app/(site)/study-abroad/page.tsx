@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Button from "@/components/Button";
-import Faq from "@/components/Faq";
+import SiteFaq from "@/components/SiteFaq";
 import PageHero from "@/components/PageHero";
 import PromoBanner from "@/components/PromoBanner";
 import StepFlow from "@/components/StepFlow";
 import Testimonials from "@/components/Testimonials";
 import UnlockBanner from "@/components/UnlockBanner";
 import Events from "@/components/home/Events";
-import { COUNTRIES, countryFlag, countryImage } from "@/data/countries";
+import { sanityFetch } from "@/sanity/lib/fetch";
+import { img } from "@/sanity/lib/image";
+import { COUNTRY_LIST, type CountryCard } from "@/sanity/lib/queries";
 
 export const metadata: Metadata = { title: "Study Abroad" };
 
@@ -38,7 +40,8 @@ const ABROAD_STEPS = [
   { title: "Fly & Start Your Journey", body: "Begin your international education experience with confidence.", color: "#cf9f02" },
 ];
 
-export default function StudyAbroadPage() {
+export default async function StudyAbroadPage() {
+  const countries = await sanityFetch<CountryCard[]>({ query: COUNTRY_LIST, tags: ["country"] });
   return (
     <>
       <PageHero
@@ -93,13 +96,13 @@ export default function StudyAbroadPage() {
       <section className="container-x flex flex-col items-center gap-10 py-16 md:py-20">
         <h2 className="text-center text-[1.875rem]/[2.375rem] font-bold tracking-[-0.01875rem] text-heading md:text-h3">Find Your Abroad Study Destinations</h2>
         <div className="grid w-full grid-cols-1 gap-x-5 gap-y-[2.3125rem] sm:grid-cols-2 lg:grid-cols-4">
-          {COUNTRIES.map((c) => (
+          {countries.map((c) => (
             <Link key={c.slug} href={`/study-abroad/${c.slug}`} className="group flex flex-col items-center gap-6">
               <div className="relative h-[17.5625rem] w-full overflow-hidden rounded-3xl">
-                <img loading="lazy" src={countryImage(c.slug)} alt={`Study in ${c.name}`} className="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-105" />
+                <img loading="lazy" src={img(c.cardImage, 800)} alt={`Study in ${c.name}`} className="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-105" />
               </div>
               <span className="flex items-center gap-2 text-h6 font-medium text-ink group-hover:text-royal">
-                <img loading="lazy" src={countryFlag(c.slug)} alt="" className="size-[1.5625rem]" />
+                <img loading="lazy" src={img(c.flag)} alt="" className="size-[1.5625rem]" />
                 {c.name}
               </span>
             </Link>
@@ -128,7 +131,7 @@ export default function StudyAbroadPage() {
               </div>
             ))}
           </div>
-          <Button href="/courses/engineering">Find Your Program</Button>
+          <Button href="/study-india">Find Your Program</Button>
         </div>
       </section>
 
@@ -146,7 +149,7 @@ export default function StudyAbroadPage() {
       <StepFlow title="Your Study Abroad Journey" steps={ABROAD_STEPS} />
       <Testimonials />
       <Events />
-      <Faq />
+      <SiteFaq page="study-abroad" />
       <PromoBanner src="/abroad/promo.webp" alt="Study Abroad — Explore. Learn. Build your future." />
     </>
   );

@@ -10,7 +10,7 @@ import Events from "@/components/home/Events";
 import Loans from "@/components/home/Loans";
 import Partners from "@/components/home/Partners";
 import Blogs from "@/components/home/Blogs";
-import Faq from "@/components/Faq";
+import SiteFaq from "@/components/SiteFaq";
 import ContactSection from "@/components/ContactSection";
 
 export default function HomePage() {
@@ -28,7 +28,7 @@ export default function HomePage() {
       <Loans />
       <Partners />
       <Blogs />
-      <Faq />
+      <SiteFaq page="home" />
       <ContactSection />
     </>
   );

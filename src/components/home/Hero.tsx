@@ -110,7 +110,7 @@ const SLIDES: Slide[] = [
     background: "linear-gradient(118.47deg, rgb(72,41,26) 0%, rgb(126,66,36) 54.57%, rgb(205,128,90) 99.16%)",
     lines: ["Study Law,", "Lead with", "Justice"],
     subtitle: "Build a rewarding career, Make an impact",
-    cta: { label: "Apply Now", variant: "primary", href: "/courses/engineering" },
+    cta: { label: "Apply Now", variant: "primary", href: "/study-india" },
     art: <img alt="" src="/home/hero/law.webp" className="absolute top-[9.625rem] left-[60rem] h-[60.9375rem] w-[49.3125rem] object-contain object-bottom" />,
   },
 ];

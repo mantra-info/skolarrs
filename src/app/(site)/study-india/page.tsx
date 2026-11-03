@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Faq from "@/components/Faq";
+import SiteFaq from "@/components/SiteFaq";
 import PageHero from "@/components/PageHero";
 import PhotoSteps from "@/components/PhotoSteps";
 import PromoBanner from "@/components/PromoBanner";
@@ -8,6 +8,9 @@ import Testimonials from "@/components/Testimonials";
 import UnlockBanner from "@/components/UnlockBanner";
 import VectorIcon from "@/components/VectorIcon";
 import Events from "@/components/home/Events";
+import { sanityFetch } from "@/sanity/lib/fetch";
+import { img } from "@/sanity/lib/image";
+import { COURSE_CATEGORY_LIST, type CourseCategoryCard } from "@/sanity/lib/queries";
 
 export const metadata: Metadata = { title: "Study in India" };
 
@@ -47,16 +50,14 @@ const WHY = [
 ];
 
 const C = "/india/courses";
-const COURSES: { title: string; body: string; bg: string; icon: string; art?: [string, string][] }[] = [
-  { title: "Engineering & Technology", body: "B.Tech | M.Tech | Mechanical | Civil | Electrical | Electronics | AI & Robotics", bg: "#e2483d", icon: `${C}/icon-engineering.svg`, art: [[`${C}/bg-engineering.svg`, "0"]] },
-  { title: "Business & Management", body: "BBA | MBA | Finance | Marketing | International Business | HR | Entrepreneurship", bg: "#16213e", icon: `${C}/icon-business.svg` },
-  { title: "Medical & Healthcare", body: "MBBS | Nursing | Pharmacy | Physiotherapy | Biotechnology | Allied Health Sciences", bg: "#0a8f7c", icon: `${C}/icon-engineering.svg`, art: [[`${C}/bg-medical-a.svg`, "2.4% 0"], [`${C}/bg-medical-b.svg`, "52.4% 6.67% 37.6% 83.33%"]] },
-  { title: "Computer Science & IT", body: "Computer Science | Data Science | Artificial Intelligence | Cybersecurity | Cloud Computing", bg: "#0057db", icon: `${C}/icon-cs.svg` },
-  { title: "Law", body: "LLB | LLM | Corporate Law | Criminal Law | International Law", bg: "#3c2a21", icon: `${C}/icon-engineering.svg`, art: [[`${C}/bg-law.svg`, "0 1.19%"]] },
-  { title: "Arts & Humanities", body: "Psychology | Economics | English | History | Political Science | Sociology", bg: "#006c7f", icon: `${C}/icon-engineering.svg`, art: [[`${C}/bg-arts.svg`, "5.06% 5.62%"]] },
-  { title: "Design & Architecture", body: "Architecture | Interior Design | Fashion Design | Product Design | Graphic Design", bg: "#0e83cd", icon: `${C}/icon-architecture.svg` },
-  { title: "Hospitality & Tourism", body: "Hotel Management | Tourism | Culinary Arts | Travel Management", bg: "#5e4db2", icon: `${C}/icon-engineering.svg`, art: [[`${C}/bg-tourism.svg`, "2.92% 3.12% 2.9% 3.12%"]] },
-];
+/** Decorative background art per course card, keyed by CMS slug. */
+const ART: Record<string, [string, string][]> = {
+  "engineering-and-technology": [[`${C}/bg-engineering.svg`, "0"]],
+  "medical-and-healthcare": [[`${C}/bg-medical-a.svg`, "2.4% 0"], [`${C}/bg-medical-b.svg`, "52.4% 6.67% 37.6% 83.33%"]],
+  law: [[`${C}/bg-law.svg`, "0 1.19%"]],
+  "arts-and-humanities": [[`${C}/bg-arts.svg`, "5.06% 5.62%"]],
+  "hospitality-and-tourism": [[`${C}/bg-tourism.svg`, "2.92% 3.12% 2.9% 3.12%"]],
+};
 
 const STEPS = [
   { title: "Career Counselling", body: "Discuss your goals, interests, and budget with our expert counselors.", color: "#f38a3f", bar: "#e56910", image: "/india/steps/s1.webp" },
@@ -67,7 +68,8 @@ const STEPS = [
   { title: "Enrolment & Academic Planning", body: "Begin your domestic education experience with confidence.", color: "#e2b203", bar: "#e2b203", image: "/india/steps/s6.webp" },
 ];
 
-export default function StudyIndiaPage() {
+export default async function StudyIndiaPage() {
+  const courses = await sanityFetch<CourseCategoryCard[]>({ query: COURSE_CATEGORY_LIST, tags: ["courseCategory"] });
   return (
     <>
       <PageHero
@@ -113,20 +115,20 @@ export default function StudyIndiaPage() {
           India combines academic excellence, affordability, cultural diversity, and growing career opportunities to create a rewarding experience for students.
         </p>
         <div className="grid w-full gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {COURSES.map((c) => (
-            <div key={c.title} className="relative flex min-h-[25.6875rem] flex-col items-start justify-between gap-10 overflow-hidden rounded-2xl p-6" style={{ backgroundColor: c.bg }}>
-              {c.art && <VectorIcon layers={c.art} className="absolute! top-6 left-[14.0625rem] h-[13.5rem] w-[13.4375rem]" />}
+          {courses.map((c) => (
+            <div key={c.title} className="relative flex min-h-[25.6875rem] flex-col items-start justify-between gap-10 overflow-hidden rounded-2xl p-6" style={{ backgroundColor: c.color }}>
+              {ART[c.slug] && <VectorIcon layers={ART[c.slug]} className="absolute! top-6 left-[14.0625rem] h-[13.5rem] w-[13.4375rem]" />}
               <div className="relative flex w-full flex-col gap-[4.375rem]">
                 <span className="flex size-[4.0625rem] items-center justify-center rounded-full border border-white bg-white p-2 drop-shadow-[0px_6px_4.75px_rgba(0,0,0,0.25)]">
-                  <img loading="lazy" src={c.icon} alt="" className="size-[2.1875rem]" />
+                  <img loading="lazy" src={img(c.icon)} alt="" className="size-[2.1875rem]" />
                 </span>
                 <div className="flex flex-col gap-5 text-white">
                   <h3 className="text-h5 font-semibold">{c.title}</h3>
-                  <p className="text-label">{c.body}</p>
+                  <p className="text-label">{c.summary}</p>
                 </div>
               </div>
               <Link
-                href="/courses/engineering"
+                href={c.hasPage ? `/study-india/${c.slug}` : "/#contact"}
                 className="bg-secondary-gradient relative inline-flex h-[4.5rem] w-full items-center justify-center gap-2.5 rounded-full px-10 text-h6 font-medium text-grey-500 transition hover:brightness-105"
               >
                 Explore
@@ -154,7 +156,7 @@ export default function StudyIndiaPage() {
       <PhotoSteps title="Your Study Abroad Journey" steps={STEPS} />
       <Testimonials />
       <Events />
-      <Faq />
+      <SiteFaq page="study-india" />
       <PromoBanner src="/abroad/promo.webp" alt="Study Abroad — Explore. Learn. Build your future." />
     </>
   );

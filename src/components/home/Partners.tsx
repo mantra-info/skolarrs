@@ -1,50 +1,34 @@
-type Logo = { src: string; w: number; h: number; crop?: boolean };
+import { sanityFetch } from "@/sanity/lib/fetch";
+import { img } from "@/sanity/lib/image";
+import { PARTNERS, type PartnerDoc } from "@/sanity/lib/queries";
 
-const ABROAD: Logo[] = [
-  { src: "/partners/abroad/u1.webp", w: 173, h: 50 },
-  { src: "/partners/abroad/u2.webp", w: 174, h: 50 },
-  { src: "/partners/abroad/u3.webp", w: 173, h: 50 },
-  { src: "/partners/abroad/u4.webp", w: 173, h: 50 },
-  { src: "/partners/abroad/u5.webp", w: 174, h: 50 },
-  { src: "/partners/abroad/u6.webp", w: 173, h: 50 },
-  { src: "/partners/abroad/u7.webp", w: 173, h: 50 },
-  { src: "/partners/abroad/u8.webp", w: 174, h: 50, crop: true },
-  { src: "/partners/abroad/u9.webp", w: 173, h: 50 },
-];
-
-const INDIA: Logo[] = [
-  { src: "/partners/india/i1.webp", w: 78, h: 73 },
-  { src: "/partners/india/i2.webp", w: 63, h: 71 },
-  { src: "/partners/india/i3.webp", w: 79, h: 79 },
-  { src: "/partners/india/i4.webp", w: 122, h: 52 },
-  { src: "/partners/india/i5.webp", w: 114, h: 69 },
-  { src: "/partners/india/i6.webp", w: 76, h: 73 },
-  { src: "/partners/india/i7.webp", w: 84, h: 72 },
-  { src: "/partners/india/i8.webp", w: 75, h: 71 },
-  { src: "/partners/india/i9.webp", w: 139, h: 67 },
-];
-
-function Marquee({ logos, gap, reverse }: { logos: Logo[]; gap: number; reverse?: boolean }) {
+function Marquee({ logos, gap, height, reverse }: { logos: PartnerDoc[]; gap: number; height: number; reverse?: boolean }) {
   // Rendered twice so the -50% translate loops seamlessly.
   const row = [...logos, ...logos];
   return (
     <div className="w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
       <div className="animate-marquee flex w-max items-center" style={{ gap: `${gap / 16}rem`, animationDirection: reverse ? "reverse" : undefined }}>
         {row.map((l, i) => (
-          <div key={i} className="relative shrink-0 overflow-hidden" style={{ width: `${l.w / 16}rem`, height: `${l.h / 16}rem` }} aria-hidden={i >= logos.length}>
-            {l.crop ? (
-              <img loading="lazy" src={l.src} alt="" className="absolute top-0 left-[17.95%] h-full w-[64.1%] max-w-none" />
-            ) : (
-              <img loading="lazy" src={l.src} alt="" className="absolute inset-0 size-full object-cover" />
-            )}
-          </div>
+          <img
+            key={i}
+            loading="lazy"
+            src={img(l.logo, 400)}
+            alt={i < logos.length ? l.name : ""}
+            aria-hidden={i >= logos.length}
+            className="w-auto max-w-[11rem] shrink-0 object-contain"
+            style={{ height: `${height / 16}rem` }}
+          />
         ))}
       </div>
     </div>
   );
 }
 
-export default function Partners() {
+export default async function Partners() {
+  const partners = await sanityFetch<PartnerDoc[]>({ query: PARTNERS, tags: ["partner"] });
+  const abroad = partners.filter((p) => p.group === "abroad");
+  const india = partners.filter((p) => p.group === "india");
+
   return (
     <section className="bg-white py-12 md:py-[3.75rem]">
       <div className="flex flex-col gap-10 px-4 lg:flex-row lg:items-center lg:gap-[3.75rem] lg:pl-[max(1rem,calc((100vw-97.5rem)/2))] lg:pr-0">
@@ -54,8 +38,8 @@ export default function Partners() {
           <p className="text-[1.625rem]/[2.375rem] font-semibold tracking-[-0.0125rem] text-paragraph md:text-h4">For India &amp; Study Abroad Journey</p>
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-10 md:gap-[3.75rem]">
-          <Marquee logos={ABROAD} gap={37} />
-          <Marquee logos={INDIA} gap={45} reverse />
+          {abroad.length > 0 && <Marquee logos={abroad} gap={37} height={50} />}
+          {india.length > 0 && <Marquee logos={india} gap={45} height={72} reverse />}
         </div>
       </div>
     </section>

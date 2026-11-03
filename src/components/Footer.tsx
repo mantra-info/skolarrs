@@ -10,7 +10,7 @@ const COMPANY: Col[] = [
       { label: "Home", href: "/" },
       { label: "How We Help", href: "/services" },
       { label: "Study Destinations", href: "/study-abroad" },
-      { label: "Course Search", href: "/courses/engineering" },
+      { label: "Course Search", href: "/study-india" },
     ],
   },
   {

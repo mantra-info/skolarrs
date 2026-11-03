@@ -3,25 +3,29 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Button from "@/components/Button";
 import ContactSection from "@/components/ContactSection";
-import Faq from "@/components/Faq";
+import SiteFaq from "@/components/SiteFaq";
 import PromoBanner from "@/components/PromoBanner";
 import Testimonials from "@/components/Testimonials";
 import VectorIcon from "@/components/VectorIcon";
 import WhySkolarrs from "@/components/WhySkolarrs";
 import CostTabs from "@/components/country/CostTabs";
-import { COUNTRIES, countryImage } from "@/data/countries";
-import { COUNTRY_DETAILS } from "@/data/country-details";
+import { sanityFetch } from "@/sanity/lib/fetch";
+import { img } from "@/sanity/lib/image";
+import { seoMetadata } from "@/sanity/lib/metadata";
+import { COUNTRY, COUNTRY_SLUGS, type Country } from "@/sanity/lib/queries";
 
 type Params = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return COUNTRIES.map((c) => ({ slug: c.slug }));
+const getCountry = (slug: string) => sanityFetch<Country | null>({ query: COUNTRY, params: { slug }, tags: ["country", "university"] });
+
+export async function generateStaticParams() {
+  const slugs = await sanityFetch<string[]>({ query: COUNTRY_SLUGS, tags: ["country"] });
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const { slug } = await params;
-  const country = COUNTRIES.find((c) => c.slug === slug);
-  return { title: country ? `Study in ${country.name}` : "Study Abroad" };
+  const country = await getCountry((await params).slug);
+  return country ? seoMetadata(country.seo, `Study in ${country.name}`) : { title: "Study Abroad" };
 }
 
 const I = "/icons/why";
@@ -62,16 +66,17 @@ function Level({ name, children }: { name: string; children: React.ReactNode }) 
 
 export default async function CountryPage({ params }: Params) {
   const { slug } = await params;
-  const country = COUNTRIES.find((c) => c.slug === slug);
+  const country = await getCountry(slug);
   if (!country) notFound();
-  const d = COUNTRY_DETAILS[slug];
+  // Countries without page content yet show just the hero, shared sections and contact form.
+  const d = country.whyBody ? country : null;
   const name = country.name;
 
   return (
     <>
       <section className="relative h-[42.5rem] overflow-hidden bg-royal md:h-[37.5rem] lg:h-[50rem]">
         <div className="absolute inset-0 overflow-hidden">
-          <img loading="lazy" src={d?.heroImage ?? countryImage(slug)} alt="" className={`absolute left-0 w-full max-w-none object-cover ${d?.heroCrop ?? "top-0 h-full"}`} />
+          <img src={img(country.heroImage ?? country.cardImage, 2000)} alt="" className="absolute inset-0 size-full object-cover" />
           {!d && <div className="absolute inset-0 bg-black/40" />}
         </div>
         <div className="container-x relative flex h-full flex-col items-center justify-center pt-24 text-center lg:justify-start lg:pt-[14.5rem]">
@@ -120,14 +125,13 @@ export default async function CountryPage({ params }: Params) {
               <H2 light>Popular Universities in {name}</H2>
               <Lead light>{d.universitiesBody}</Lead>
               <div className="grid w-full gap-3 lg:grid-flow-col lg:grid-cols-2 lg:grid-rows-5">
-                {d.universities.map((u) => (
+                {d.universities?.map((u) => (
                   <Link
-                    key={u.name} href="/#contact"
+                    key={u.name}
+                    href={u.hasDetailPage ? `/colleges/${u.slug}` : "/#contact"}
                     className="group flex h-[5.9375rem] items-center gap-5 rounded-3xl border-[0.5px] border-[#e3e3e3] bg-white px-5 py-2 transition hover:shadow-lg"
                   >
-                    <span className="relative shrink-0 overflow-hidden" style={{ width: `${u.w / 16}rem`, height: `${u.h / 16}rem` }}>
-                      <img loading="lazy" src={u.logo} alt="" className={`absolute max-w-none ${u.crop ?? "inset-0 size-full object-contain"}`} />
-                    </span>
+                    <img loading="lazy" src={img(u.logo, 400)} alt="" className="h-12 w-[7.5rem] shrink-0 object-contain" />
                     <span className="flex-1 text-label font-medium text-grey-500">{u.name}</span>
                     <img loading="lazy" src="/icons/arrow-uni.svg" alt="" className="size-6 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </Link>
@@ -140,7 +144,7 @@ export default async function CountryPage({ params }: Params) {
             <H2>Top Courses in {name}</H2>
             <Lead>{d.coursesBody}</Lead>
             <div className="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {d.courses.map((c) => (
+              {d.courses?.map((c) => (
                 <div key={c} className="flex h-[5.9375rem] items-center justify-center rounded-3xl border-[0.5px] border-[#f15b50] bg-[#ffeceb] px-5 text-center text-h6 font-medium text-[#c9372c]">
                   {c}
                 </div>
@@ -221,7 +225,7 @@ export default async function CountryPage({ params }: Params) {
             <div className="container-x relative flex flex-col items-center gap-12">
               <H2 light>Cost of Studying in {name}</H2>
               <p className="text-center text-base font-medium text-[#e8e8e8] md:text-h6">{d.costBody}</p>
-              <CostTabs study={d.costOfStudy} living={d.costOfLiving} />
+              <CostTabs study={d.costOfStudy ?? []} living={d.costOfLiving ?? []} />
             </div>
           </section>
 
@@ -229,7 +233,7 @@ export default async function CountryPage({ params }: Params) {
             <H2 className="max-w-[40rem]">Application Requirements to Study in {name}</H2>
             <Lead>{d.applicationBody}</Lead>
             <div className="flex w-full flex-wrap justify-center gap-5">
-              {d.requirements.map((r) => (
+              {d.requirements?.map((r) => (
                 <div
                   key={r.title}
                   className="flex w-full flex-col items-start gap-6 rounded-[2rem] border-[0.5px] border-[#dcdfe4] bg-[#f7f8f9] px-7 py-6 sm:w-[calc(50%-0.625rem)] lg:w-[calc(25%-0.9375rem)] lg:min-w-[18.75rem] lg:min-h-[23.875rem]"
@@ -248,8 +252,8 @@ export default async function CountryPage({ params }: Params) {
 
       <WhySkolarrs />
       <Testimonials />
-      <Faq />
-      {d ? <PromoBanner wide src={d.promo} alt={`Your future starts in ${name}`} crop="top-[-8.68%] h-[116.64%]" /> : <ContactSection />}
+      <SiteFaq page="country" />
+      {d?.promo ? <PromoBanner wide src={img(d.promo, 2000)} alt={d.promo.alt ?? `Your future starts in ${name}`} crop="inset-0 h-full object-cover" /> : <ContactSection />}
     </>
   );
 }

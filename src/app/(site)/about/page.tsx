@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import ContactSection from "@/components/ContactSection";
 import CtaBanner from "@/components/CtaBanner";
-import Faq from "@/components/Faq";
+import SiteFaq from "@/components/SiteFaq";
 import PageHero from "@/components/PageHero";
 import VectorIcon from "@/components/VectorIcon";
 
@@ -173,7 +173,7 @@ export default function AboutPage() {
       </section>
 
       <CtaBanner />
-      <Faq />
+      <SiteFaq page="about" />
       <ContactSection />
     </>
   );
