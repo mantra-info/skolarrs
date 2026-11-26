@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Button from "./Button";
+import FooterSection from "./FooterSection";
 
 type Col = { title: string; links: { label: string; href: string }[] };
 
@@ -54,8 +55,10 @@ const SOCIAL = [
 ];
 
 function Heading({ children }: { children: React.ReactNode }) {
-  return <p className="px-4 py-5 text-h6 font-semibold text-gold">{children}</p>;
+  return <p className="px-4 pt-4 pb-2 text-h6 font-semibold text-gold sm:py-5">{children}</p>;
 }
+
+const CONTACT_LINK = "block break-words px-4 py-2.5 text-h6 font-medium text-white hover:text-gold sm:py-2";
 
 function FLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
@@ -71,46 +74,44 @@ function Divider() {
 
 export default function Footer() {
   return (
-    <footer className="relative bg-footer pt-10 pb-5">
+    <footer className="relative bg-footer pt-8 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:pt-10">
       <div className="container-x flex flex-col gap-5">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
-          <div className="relative h-[9.6875rem] w-[16.4375rem] shrink-0">
+        <div className="flex flex-col gap-4 sm:gap-8 lg:flex-row lg:items-start lg:justify-between">
+          <div className="relative h-24 w-[10.1875rem] shrink-0 sm:h-[9.6875rem] sm:w-[16.4375rem]">
             <img loading="lazy" src="/layout/footer-logo.webp" alt="Skolarrs Solutions" className="absolute inset-0 size-full object-cover" />
           </div>
 
           <div className="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:flex lg:flex-1 lg:justify-between lg:pl-4">
             <div>
               {COMPANY.map((c) => (
-                <div key={c.title}>
-                  <Heading>{c.title}</Heading>
+                <FooterSection key={c.title} title={c.title}>
                   {c.links.map((l) => (
                     <FLink key={l.label} href={l.href}>
                       {l.label}
                     </FLink>
                   ))}
-                </div>
+                </FooterSection>
               ))}
             </div>
             {[COUNTRIES, HELP].map((c) => (
-              <div key={c.title}>
-                <Heading>{c.title}</Heading>
+              <FooterSection key={c.title} title={c.title}>
                 {c.links.map((l) => (
                   <FLink key={l.label} href={l.href}>
                     {l.label}
                   </FLink>
                 ))}
-              </div>
+              </FooterSection>
             ))}
-            <div className="flex flex-col gap-[0.3125rem]">
+            <div className="order-first mb-2 flex flex-col gap-[0.3125rem] sm:order-none sm:mb-0">
               <div>
                 <Heading>Contact Us</Heading>
-                <a href="tel:04224370044" className="block break-words px-4 py-2 text-h6 font-medium text-white hover:text-gold">
+                <a href="tel:04224370044" className={CONTACT_LINK}>
                   0422 - 437 00 44
                 </a>
-                <a href="tel:+919790444443" className="block break-words px-4 py-2 text-h6 font-medium text-white hover:text-gold">
+                <a href="tel:+919790444443" className={CONTACT_LINK}>
                   +91 97904 44443
                 </a>
-                <a href="mailto:info@skolarssolutions.com" className="block break-words px-4 py-2 text-h6 font-medium text-white hover:text-gold">
+                <a href="mailto:info@skolarssolutions.com" className={CONTACT_LINK}>
                   info@skolarssolutions.com
                 </a>
               </div>
@@ -131,15 +132,15 @@ export default function Footer() {
         <img loading="lazy" src="/layout/line.svg" alt="" className="h-px w-full" />
 
         <div className="flex flex-col items-center gap-6 lg:flex-row lg:justify-between">
-          <div className="flex h-[3.4375rem] items-center gap-12 px-2.5">
+          <div className="flex h-[3.4375rem] items-center gap-6 px-2.5 sm:gap-12">
             {SOCIAL.map((s) => (
-              <a key={s.label} href={s.href} target="_blank" rel="noreferrer" aria-label={s.label} className="transition hover:opacity-80">
+              <a key={s.label} href={s.href} target="_blank" rel="noreferrer" aria-label={s.label} className="flex size-11 items-center justify-center transition hover:opacity-80">
                 <img loading="lazy" src={s.src} alt="" style={{ width: `${s.w / 16}rem`, height: `${s.h / 16}rem` }} />
               </a>
             ))}
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
+          <div className="grid grid-cols-3 place-items-center gap-x-8 gap-y-5 md:flex md:flex-wrap md:items-center md:justify-center md:gap-10">
             <img loading="lazy" src="/layout/cert1.svg" alt="AAERI" width={49} height={50} className="h-[3.125rem] w-[3.0625rem]" />
             <Divider />
             <img loading="lazy" src="/layout/icef.webp" alt="ICEF" className="h-[3.125rem] w-[2.6875rem] object-cover" />
@@ -158,19 +159,23 @@ export default function Footer() {
             </span>
           </div>
 
-          <Button href="/#contact">Free Counselling</Button>
+          <Button href="/#contact" className="w-full sm:w-auto">
+            Free Counselling
+          </Button>
         </div>
 
         <img loading="lazy" src="/layout/line.svg" alt="" className="h-px w-full" />
 
-        <div className="flex flex-col items-center gap-3 text-label lg:flex-row lg:justify-between">
-          <p className="flex items-center gap-1 text-white">
-            <img loading="lazy" src="/layout/copyright.svg" alt="" className="size-6" />
-            2026 <span className="font-medium text-gold">SkolarrsSolutions</span>. All Rights Reserved
+        <div className="flex flex-col items-center gap-3 text-center text-label lg:flex-row lg:justify-between">
+          <p className="text-white sm:flex sm:items-center sm:gap-1">
+            <img loading="lazy" src="/layout/copyright.svg" alt="" className="mr-1 inline-block size-6 align-[-0.4rem] sm:mr-0" />
+            <span>
+              2026 <span className="font-medium text-gold">SkolarrsSolutions</span>. All Rights Reserved
+            </span>
           </p>
-          <div className="flex">
+          <div className="flex flex-wrap justify-center gap-x-4 sm:gap-x-0">
             {["Privacy Policy", "Terms of Use", "Payment Terms"].map((t) => (
-              <Link key={t} href="#" className="px-4 py-2 font-medium text-sky hover:underline">
+              <Link key={t} href="#" className="py-2 font-medium text-sky hover:underline sm:px-4">
                 {t}
               </Link>
             ))}
@@ -184,9 +189,9 @@ export default function Footer() {
       <a
         href="#top"
         aria-label="Back to top"
-        className="absolute right-4 bottom-36 flex size-14 items-center justify-center rounded-full border border-white p-2.5 transition hover:bg-white/10 lg:right-[3.4375rem] lg:bottom-auto lg:top-[37.8125rem]"
+        className="absolute top-8 right-4 flex size-11 items-center justify-center rounded-full border border-white p-2 transition hover:bg-white/10 sm:top-10 sm:size-14 sm:p-2.5 lg:right-[3.4375rem] lg:top-[37.8125rem]"
       >
-        <img loading="lazy" src="/layout/up.svg" alt="" className="size-9" />
+        <img loading="lazy" src="/layout/up.svg" alt="" className="size-7 sm:size-9" />
       </a>
     </footer>
   );

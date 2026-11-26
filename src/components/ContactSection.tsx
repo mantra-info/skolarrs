@@ -41,10 +41,10 @@ export default function ContactSection() {
             <div className="flex flex-wrap items-center gap-4">
               <button
                 type="submit"
-                className="bg-primary-gradient inline-flex h-[4.5rem] items-center gap-2.5 rounded-full px-10 text-h6 font-medium text-white transition hover:brightness-110"
+                className="bg-primary-gradient inline-flex h-[4.5rem] items-center gap-2.5 rounded-full px-10 text-h6 font-medium text-[color:var(--theme-btn-text,#fff)] transition hover:brightness-110"
               >
                 Submit
-                <img loading="lazy" src="/layout/arrow-white.svg" alt="" className="size-6" />
+                <img loading="lazy" src="/layout/arrow-white.svg" alt="" className="size-6 [filter:var(--theme-btn-art,none)]" />
               </button>
               {sent && <p className="text-label font-medium text-[#22a06b]">Thanks! Our counsellor will reach out shortly.</p>}
             </div>

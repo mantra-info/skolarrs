@@ -81,4 +81,36 @@ export const altImage = defineType({
   fields: [defineField({ name: "alt", title: "Alt text", type: "string" })],
 });
 
-export const objects = [seo, labelValue, titleBody, imageCard, link, richText, altImage];
+/** One eligibility card, e.g. "English Language Proficiency" with Undergraduate / Postgraduate lists. */
+export const eligibilityCard = defineType({
+  name: "eligibilityCard",
+  title: "Eligibility card",
+  type: "object",
+  fields: [
+    defineField({ name: "title", type: "string", validation: (r) => r.required() }),
+    defineField({
+      name: "levels",
+      type: "array",
+      of: [
+        defineArrayMember({
+          name: "eligibilityLevel",
+          title: "Level",
+          type: "object",
+          fields: [
+            defineField({ name: "name", type: "string", description: "e.g. Undergraduate", validation: (r) => r.required() }),
+            defineField({
+              name: "points",
+              type: "array",
+              description: "One line per requirement. Select text and press B for bold.",
+              of: [defineArrayMember({ type: "block", styles: [], lists: [], marks: { decorators: [{ title: "Bold", value: "strong" }], annotations: [] } })],
+            }),
+          ],
+          preview: { select: { title: "name" } },
+        }),
+      ],
+    }),
+  ],
+  preview: { select: { title: "title" } },
+});
+
+export const objects = [seo, labelValue, titleBody, imageCard, link, richText, altImage, eligibilityCard];

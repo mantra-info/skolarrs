@@ -10,8 +10,8 @@ type Props = {
 };
 
 const variants = {
-  primary: "bg-primary-gradient text-white hover:brightness-110",
-  secondary: "bg-secondary-gradient text-grey-500 hover:brightness-105",
+  primary: "bg-primary-gradient text-[color:var(--theme-btn-text,#fff)] hover:brightness-110",
+  secondary: "bg-secondary-gradient text-[color:var(--theme-btn-text,var(--color-grey-500))] hover:brightness-105",
 };
 
 const arrows = {
@@ -25,7 +25,7 @@ export default function Button({ href, children, variant = "primary", className 
   const content = (
     <>
       {children}
-      {arrow && <img loading="lazy" src={arrows[variant]} alt="" width={24} height={24} className="size-6 shrink-0" />}
+      {arrow && <img loading="lazy" src={arrows[variant]} alt="" width={24} height={24} className="size-6 shrink-0 [filter:var(--theme-btn-art,none)]" />}
     </>
   );
   if (href) {

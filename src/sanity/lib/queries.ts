@@ -1,4 +1,5 @@
-import { defineQuery } from "next-sanity";
+import { defineQuery, type PortableTextBlock } from "next-sanity";
+import type { CountryColors } from "../schemaTypes/presets";
 import { img, type SanityImage } from "./image";
 
 // ---------- shared ----------
@@ -22,14 +23,15 @@ export type CountryCard = { name: string; slug: string; flag: SanityImage; cardI
 export const COUNTRY_SLUGS = defineQuery(`*[_type == "country" && defined(slug.current)].slug.current`);
 
 export const COUNTRY = defineQuery(`*[_type == "country" && slug.current == $slug][0]{
-  name, "slug": slug.current, heroImage, cardImage, whyBody, universitiesBody,
+  name, "slug": slug.current, colors, heroImage, cardImage, whyBody, universitiesBody,
   "universities": universities[]->${UNI},
-  coursesBody, courses, eligibilityBody, examsBody, costBody, costOfStudy, costOfLiving,
+  coursesBody, courses, eligibilityBody, eligibility, examsBody, costBody, costOfStudy, costOfLiving,
   applicationBody, requirements, promo, seo
 }`);
 export type Country = {
   name: string;
   slug: string;
+  colors?: CountryColors | null;
   heroImage?: SanityImage;
   cardImage?: SanityImage;
   whyBody?: string;
@@ -38,6 +40,7 @@ export type Country = {
   coursesBody?: string;
   courses?: string[];
   eligibilityBody?: string;
+  eligibility?: { title: string; levels?: { name: string; points?: PortableTextBlock[] }[] }[];
   examsBody?: string;
   costBody?: string;
   costOfStudy?: Row[];

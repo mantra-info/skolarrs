@@ -11,11 +11,11 @@ export default function Testimonials({
   cards?: string[];
 }) {
   return (
-    <section className="overflow-hidden bg-[linear-gradient(to_top,#5ca9ff,#083abc)] py-16 md:py-20">
+    <section className="overflow-hidden [background:var(--theme-section,linear-gradient(to_top,#5ca9ff,#083abc))] py-16 md:py-20">
       <div className="container-x flex flex-col gap-6">
         <div className="flex flex-col gap-6 pb-5">
-          <h2 className="text-[1.875rem]/[2.375rem] font-bold tracking-[-0.01875rem] text-white md:text-h3">{title}</h2>
-          <p className="text-label text-[#fdfdfd]">{body}</p>
+          <h2 className="text-[1.875rem]/[2.375rem] font-bold tracking-[-0.01875rem] text-[color:var(--theme-section-text,#fff)] md:text-h3">{title}</h2>
+          <p className="text-label text-[color:var(--theme-section-text,#fdfdfd)]">{body}</p>
         </div>
         <div className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto">
           {cards.map((c, i) => (

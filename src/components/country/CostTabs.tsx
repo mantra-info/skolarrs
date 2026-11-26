@@ -20,7 +20,7 @@ export default function CostTabs({ study, living }: { study: Item[]; living: Ite
             key={key}
             type="button"
             onClick={() => setTab(key)}
-            className={`rounded-full px-6 py-4 text-h6 text-white transition ${tab === key ? "bg-[#d77a00] font-semibold" : "border-[0.5px] border-white hover:bg-white/10"}`}
+            className={`rounded-full px-6 py-4 text-h6 transition ${tab === key ? "bg-[color:var(--theme-tab)] font-semibold text-[color:var(--theme-tab-text)]" : "border-[0.5px] border-[color:var(--theme-cost-text,#fff)] text-[color:var(--theme-cost-text,#fff)] hover:bg-white/10"}`}
           >
             {label}
           </button>

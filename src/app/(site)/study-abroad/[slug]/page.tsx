@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PortableText } from "next-sanity";
 import Button from "@/components/Button";
 import ContactSection from "@/components/ContactSection";
 import SiteFaq from "@/components/SiteFaq";
@@ -13,6 +14,7 @@ import { sanityFetch } from "@/sanity/lib/fetch";
 import { img } from "@/sanity/lib/image";
 import { seoMetadata } from "@/sanity/lib/metadata";
 import { COUNTRY, COUNTRY_SLUGS, type Country } from "@/sanity/lib/queries";
+import { countryThemeVars } from "@/sanity/schemaTypes/presets";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -38,12 +40,12 @@ const WHY_POINTS: { label: string; layers: [string, string][] }[] = [
   { label: "Pathway for Permanent Residency", layers: [[`${I}/resident-a.svg`, "3.13% 0 3.13% 5.86%"], [`${I}/resident-b.svg`, "14.84% 6.05% 3.13% 0"]] },
 ];
 
-function H2({ children, light, className = "" }: { children: React.ReactNode; light?: boolean; className?: string }) {
-  return <h2 className={`text-center text-[1.625rem]/8 font-bold tracking-[-0.0125rem] md:text-h4 ${light ? "text-white" : "text-ink"} ${className}`}>{children}</h2>;
+function H2({ children, color = "var(--color-ink)", className = "" }: { children: React.ReactNode; color?: string; className?: string }) {
+  return <h2 style={{ color }} className={`text-center text-[1.625rem]/8 font-bold tracking-[-0.0125rem] md:text-h4 ${className}`}>{children}</h2>;
 }
 
-function Lead({ children, light }: { children: React.ReactNode; light?: boolean }) {
-  return <p className={`text-center text-base md:text-h6 ${light ? "text-white" : "text-[#3c3c3c]"}`}>{children}</p>;
+function Lead({ children, color = "#3c3c3c" }: { children: React.ReactNode; color?: string }) {
+  return <p style={{ color }} className="text-center text-base md:text-h6">{children}</p>;
 }
 
 function EligibilityCard({ title, children }: { title: string; children: React.ReactNode }) {
@@ -73,7 +75,7 @@ export default async function CountryPage({ params }: Params) {
   const name = country.name;
 
   return (
-    <>
+    <div style={countryThemeVars(country.colors) as React.CSSProperties}>
       <section className="relative h-[42.5rem] overflow-hidden bg-royal md:h-[37.5rem] lg:h-[50rem]">
         <div className="absolute inset-0 overflow-hidden">
           <img src={img(country.heroImage ?? country.cardImage, 2000)} alt="" className="absolute inset-0 size-full object-cover" />
@@ -120,10 +122,10 @@ export default async function CountryPage({ params }: Params) {
             </div>
           </section>
 
-          <section className="bg-[linear-gradient(to_top,#5ca9ff,#083abc)] py-16 md:py-20">
+          <section className="[background:var(--theme-section)] py-16 md:py-20">
             <div className="container-x flex flex-col items-center gap-12">
-              <H2 light>Popular Universities in {name}</H2>
-              <Lead light>{d.universitiesBody}</Lead>
+              <H2 color="var(--theme-section-text, #fff)">Popular Universities in {name}</H2>
+              <Lead color="var(--theme-section-text, #fff)">{d.universitiesBody}</Lead>
               <div className="grid w-full gap-3 lg:grid-flow-col lg:grid-cols-2 lg:grid-rows-5">
                 {d.universities?.map((u) => (
                   <Link
@@ -145,57 +147,28 @@ export default async function CountryPage({ params }: Params) {
             <Lead>{d.coursesBody}</Lead>
             <div className="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {d.courses?.map((c) => (
-                <div key={c} className="flex h-[5.9375rem] items-center justify-center rounded-3xl border-[0.5px] border-[#f15b50] bg-[#ffeceb] px-5 text-center text-h6 font-medium text-[#c9372c]">
+                <div key={c} className="flex h-[5.9375rem] items-center justify-center rounded-3xl border-[0.5px] border-[color:var(--theme-course-border)] bg-[color:var(--theme-course-bg)] px-5 text-center text-h6 font-medium text-[color:var(--theme-course-text)]">
                   {c}
                 </div>
               ))}
             </div>
           </section>
 
-          {slug === "canada" && (
-            <section className="bg-secondary-gradient py-16 md:py-20">
+          {d.eligibility && d.eligibility.length > 0 && (
+            <section className="[background:var(--theme-eligibility)] py-16 md:py-20">
               <div className="container-x flex flex-col items-center gap-12">
-                <H2>Eligibility Criteria to Study in {name}</H2>
-                <Lead>{d.eligibilityBody}</Lead>
+                <H2 color="var(--theme-eligibility-text, var(--color-ink))">Eligibility Criteria to Study in {name}</H2>
+                <Lead color="var(--theme-eligibility-text, #3c3c3c)">{d.eligibilityBody}</Lead>
                 <div className="flex w-full flex-col gap-6 lg:flex-row">
-                  <EligibilityCard title="Academic Requirements">
-                    <Level name="Undergraduate">
-                      <p>Completion of 10, +2 from a recognized bord</p>
-                      <p>Most Canadian institution requires a minimum of 65% - 75%, while top universities may expect 80%+</p>
-                    </Level>
-                    <Level name="Diploma">
-                      <p>Completion of 10, +2 from a recognized board with at least 50% overall marks</p>
-                    </Level>
-                    <Level name="Post Graduate">
-                      <p>A recognized 3-4 years bachelor’s degree in a relevant field</p>
-                      <p>Most universities require a minimum 60% - 70% or an equivalent GPA. Competitive universities may have higher academic requirements.</p>
-                    </Level>
-                  </EligibilityCard>
-                  <EligibilityCard title="English Language Proficiency">
-                    <Level name="Undergraduate">
-                      <p><b>IELTS</b> : 6.0 - 6.5 overall (no band less than 6.0 in many universities)</p>
-                      <p><b>TOEFL iBT</b> : 80 - 90</p>
-                      <p><b>PTE Academic</b> : 58 - 65</p>
-                      <p><b>Duolingo English Test</b> : Accepted by many universities</p>
-                    </Level>
-                    <Level name="Postgraduate">
-                      <p><b>IELTS</b> : 6.5 overall (some programs require 7.0)</p>
-                      <p><b>TOEFL iBT</b> : 88 - 100</p>
-                      <p><b>PTE Academic</b> : 60 - 68</p>
-                      <p>Higher scores may be required for competitive programs such as MBA, Law, or Health Sciences</p>
-                    </Level>
-                  </EligibilityCard>
-                  <EligibilityCard title="Standardized Tests">
-                    <Level name="Undergraduate">
-                      <p>
-                        SAT/ACT scores are generally <span className="font-semibold">not required,</span> but may strengthen applications to some universities
-                      </p>
-                    </Level>
-                    <Level name="Postgraduate">
-                      <p><b>GRE</b> may be required for selected engineering and science programs</p>
-                      <p><b>GMAT</b> may be required for MBA and certain business programs</p>
-                    </Level>
-                  </EligibilityCard>
+                  {d.eligibility.map((card) => (
+                    <EligibilityCard key={card.title} title={card.title}>
+                      {card.levels?.map((level) => (
+                        <Level key={level.name} name={level.name}>
+                          {level.points && <PortableText value={level.points} />}
+                        </Level>
+                      ))}
+                    </EligibilityCard>
+                  ))}
                 </div>
               </div>
             </section>
@@ -212,19 +185,19 @@ export default async function CountryPage({ params }: Params) {
             </div>
           </section>
 
-          <section className="relative overflow-hidden bg-[#1d7afc] py-16 md:py-20">
+          <section className="relative overflow-hidden [background:var(--theme-cost)] py-16 md:py-20">
             <div className="pointer-events-none absolute inset-[0.13%_55.8%_-83.86%_-53.58%] opacity-15">
-              <img loading="lazy" src="/country/cost-linework.svg" alt="" className="absolute inset-0 size-full" />
+              <img loading="lazy" src="/country/cost-linework.svg" alt="" className="absolute inset-0 size-full [filter:var(--theme-cost-art,none)]" />
             </div>
             <div className="pointer-events-none absolute inset-[-4.92%_-20.98%_2.39%_79.02%] hidden items-center justify-center lg:flex" style={{ containerType: "size" }}>
-              <img loading="lazy" src="/country/plane-right.svg" alt="" className="h-[hypot(42.4964cqw,-39.958cqh)] w-[hypot(-57.5036cqw,-60.042cqh)] max-w-none flex-none rotate-[-133.5deg]" />
+              <img loading="lazy" src="/country/plane-right.svg" alt="" className="h-[hypot(42.4964cqw,-39.958cqh)] w-[hypot(-57.5036cqw,-60.042cqh)] max-w-none flex-none rotate-[-133.5deg] [filter:var(--theme-cost-art,none)]" />
             </div>
             <div className="pointer-events-none absolute inset-[-23.83%_90.48%_21.3%_-32.44%] hidden items-center justify-center lg:flex" style={{ containerType: "size" }}>
-              <img loading="lazy" src="/country/plane-left.svg" alt="" className="h-[hypot(-42.4964cqw,39.958cqh)] w-[hypot(57.5036cqw,60.042cqh)] max-w-none flex-none rotate-[46.5deg]" />
+              <img loading="lazy" src="/country/plane-left.svg" alt="" className="h-[hypot(-42.4964cqw,39.958cqh)] w-[hypot(57.5036cqw,60.042cqh)] max-w-none flex-none rotate-[46.5deg] [filter:var(--theme-cost-art,none)]" />
             </div>
             <div className="container-x relative flex flex-col items-center gap-12">
-              <H2 light>Cost of Studying in {name}</H2>
-              <p className="text-center text-base font-medium text-[#e8e8e8] md:text-h6">{d.costBody}</p>
+              <H2 color="var(--theme-cost-text, #fff)">Cost of Studying in {name}</H2>
+              <p className="text-center text-base font-medium text-[color:var(--theme-cost-text,#e8e8e8)] md:text-h6">{d.costBody}</p>
               <CostTabs study={d.costOfStudy ?? []} living={d.costOfLiving ?? []} />
             </div>
           </section>
@@ -254,6 +227,6 @@ export default async function CountryPage({ params }: Params) {
       <Testimonials />
       <SiteFaq page="country" />
       {d?.promo ? <PromoBanner wide src={img(d.promo, 2000)} alt={d.promo.alt ?? `Your future starts in ${name}`} crop="inset-0 h-full object-cover" /> : <ContactSection />}
-    </>
+    </div>
   );
 }

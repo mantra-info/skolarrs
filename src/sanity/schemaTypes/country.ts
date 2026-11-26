@@ -1,4 +1,16 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { ColorInput } from "../components/ColorInput";
+import { HEX_COLOR } from "./presets";
+
+const colorField = (name: string, title: string, description: string) =>
+  defineField({
+    name,
+    title,
+    type: "string",
+    description,
+    components: { input: ColorInput },
+    validation: (r) => r.regex(HEX_COLOR, { name: "hex colour, like #c9372c" }),
+  });
 
 /** Study-abroad destination: /study-abroad/<slug>. */
 export const country = defineType({
@@ -15,6 +27,18 @@ export const country = defineType({
     defineField({ name: "name", type: "string", group: "basic", validation: (r) => r.required() }),
     defineField({ name: "slug", type: "slug", group: "basic", options: { source: "name" }, validation: (r) => r.required() }),
     defineField({ name: "order", type: "number", group: "basic", description: "Position on the Study Abroad page (1 = first)." }),
+    defineField({
+      name: "colors",
+      title: "Page colours",
+      type: "object",
+      group: "basic",
+      description: "Leave a colour blank to keep the default blue and gold. Text on top turns white or dark automatically.",
+      fields: [
+        colorField("main", "Main colour", "Universities and testimonials sections, and buttons."),
+        colorField("eligibility", "Eligibility section", "Background of the eligibility section."),
+        colorField("cost", "Cost section", "Background of the cost section."),
+      ],
+    }),
     defineField({ name: "flag", type: "image", group: "basic", description: "Round flag SVG." }),
     defineField({ name: "cardImage", type: "image", options: { hotspot: true }, group: "basic", description: "Photo on the destination cards." }),
     defineField({ name: "heroImage", type: "image", options: { hotspot: true }, group: "content" }),
@@ -29,7 +53,8 @@ export const country = defineType({
     }),
     defineField({ name: "coursesBody", title: "Courses intro", type: "text", rows: 4, group: "content" }),
     defineField({ name: "courses", title: "Popular courses", type: "array", of: [defineArrayMember({ type: "string" })], group: "content" }),
-    defineField({ name: "eligibilityBody", title: "Eligibility", type: "text", rows: 4, group: "content" }),
+    defineField({ name: "eligibilityBody", title: "Eligibility intro", type: "text", rows: 4, group: "content" }),
+    defineField({ name: "eligibility", title: "Eligibility cards", type: "array", of: [defineArrayMember({ type: "eligibilityCard" })], group: "content", description: "The eligibility section only shows when this has cards." }),
     defineField({ name: "examsBody", title: "Exams", type: "text", rows: 4, group: "content" }),
 
     defineField({ name: "costBody", title: "Cost intro", type: "text", rows: 4, group: "costs" }),
