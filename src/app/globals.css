@@ -1,26 +1,145 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+
+  /* Brand colours (Figma: brand-colors / neutral) */
+  --color-gold: #ffc933;
+  --color-soft-yellow: #fff6d8;
+  --color-sky: #5ca9ff;
+  --color-royal: #083abc;
+  --color-azure: #2c7bff;
+  --color-ink: #141414;
+  --color-grey-500: #3d3937;
+  --color-footer: #071b34;
+  --color-heading: #16213e;
+  --color-paragraph: #5d6472;
+  --color-surface: #f4f7fb;
+
+  /* Typography scale (Figma text styles) */
+  --text-title-1: 4.5rem;
+  --text-title-1--line-height: 5.5rem;
+  --text-title-1--letter-spacing: -0.05rem;
+  --text-title-2: 4rem;
+  --text-title-2--line-height: 4.75rem;
+  --text-title-2--letter-spacing: -0.05rem;
+  --text-h2: 3rem;
+  --text-h2--line-height: 3.625rem;
+  --text-h2--letter-spacing: -0.025rem;
+  --text-h3: 2.5rem;
+  --text-h3--line-height: 3rem;
+  --text-h3--letter-spacing: -0.01875rem;
+  --text-h4: 2rem;
+  --text-h4--line-height: 2.375rem;
+  --text-h4--letter-spacing: -0.0125rem;
+  --text-h5: 1.5rem;
+  --text-h5--line-height: 1.875rem;
+  --text-h5--letter-spacing: -0.009375rem;
+  --text-h6: 1.125rem;
+  --text-h6--line-height: 1.875rem;
+  --text-label: 1rem;
+  --text-label--line-height: 1.375rem;
+  --text-label--letter-spacing: -0.01125rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-white font-sans text-ink antialiased;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Desktop follows the 1920px design without a cap; mobile keeps browser defaults. */
+@media (width >= 64rem) {
+  html { font-size: calc(100vw / 120); }
+}
+
+@utility container-x {
+  --gutter: 1rem;
+  width: 100%;
+  max-width: calc(101.25rem + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  @media (width >= 48rem) { --gutter: 1.5rem; }
+  @media (width >= 64rem) { --gutter: 4rem; }
+}
+
+@utility bg-primary-gradient {
+  background-image: var(--theme-btn-primary, linear-gradient(to top, #2c7bff, #083abc));
+}
+
+@utility bg-secondary-gradient {
+  background-image: var(--theme-btn-secondary, linear-gradient(to top, #ffe168, #fdc730));
+}
+
+/* EMI calculator slider: grey track, gold fill (via --fill), gold thumb with white core */
+.emi-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 1.375rem;
+  background: transparent;
+  cursor: pointer;
+}
+.emi-range::-webkit-slider-runnable-track {
+  height: 0.5rem;
+  border-radius: 0.25rem;
+  background: linear-gradient(to top, #ffe168, #fdc730) 0 / var(--fill, 0%) 100% no-repeat, #d9d9d9;
+}
+.emi-range::-moz-range-track {
+  height: 0.5rem;
+  border-radius: 0.25rem;
+  background: linear-gradient(to top, #ffe168, #fdc730) 0 / var(--fill, 0%) 100% no-repeat, #d9d9d9;
+}
+.emi-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  margin-top: -0.4375rem;
+  width: 1.375rem;
+  height: 1.375rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0.3125rem, transparent 0.34375rem), linear-gradient(to top, #ffe168, #fdc730);
+}
+.emi-range::-moz-range-thumb {
+  width: 1.375rem;
+  height: 1.375rem;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0.3125rem, transparent 0.34375rem), linear-gradient(to top, #ffe168, #fdc730);
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Fixed-shape promos use their own frame width on phones and tablets. */
+.promo-tile { container-type: inline-size; }
+.promo-tile-copy { gap: clamp(0.625rem, 2.47cqw, 1.1875rem); }
+.promo-tile-title { font-size: clamp(1rem, 4.16cqw, 2rem); line-height: 1.1875; }
+.promo-tile-button { width: clamp(7rem, 21.82cqw, 10.5rem); height: clamp(2rem, 6.24cqw, 3rem); font-size: clamp(0.75rem, 2.08cqw, 1rem); }
+@media (width >= 64rem) {
+  .promo-tile-title { font-size: 2rem; }
+  .promo-tile-copy { gap: 1.1875rem; }
+  .promo-tile-button { width: 10.5rem; height: 3rem; font-size: 1rem; }
 }
