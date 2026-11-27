@@ -4,16 +4,7 @@ import { useEffect, useState } from "react";
 import Button from "@/components/Button";
 import Linework from "@/components/Linework";
 
-type Slide = {
-  key: string;
-  background: string;
-  lines: [string, string, string];
-  accent?: string;
-  subtitle: string;
-  dark?: boolean;
-  cta: { label: string; variant: "primary" | "secondary"; href: string };
-  art: React.ReactNode;
-};
+import type { HeroSlideDoc } from "@/sanity/lib/queries";
 
 /** Absolutely positioned artwork laid out on the 1920x1080 Figma frame. */
 function Abroad() {
@@ -78,89 +69,78 @@ function Domestic() {
   );
 }
 
-const SLIDES: Slide[] = [
-  {
-    key: "abroad",
-    background: "linear-gradient(-56.785deg, rgb(92,169,255) 3.35%, rgb(35,94,209) 31.53%, rgb(8,58,188) 69.13%)",
-    lines: ["Dream", "Learn", "Achieve"],
-    accent: "Anywhere",
-    subtitle: "Your Global Career Begins Here",
-    cta: { label: "Start Your Journey", variant: "secondary", href: "/study-abroad" },
-    art: <Abroad />,
-  },
-  {
-    key: "domestic",
-    background: "linear-gradient(to top, #ffe168, #fdc730)",
-    lines: ["Study In India,", "Limitless", "Possibilities"],
-    subtitle: "Explore diverse courses in India",
-    dark: true,
-    cta: { label: "Apply Now", variant: "primary", href: "/study-india" },
-    art: <Domestic />,
-  },
-  {
-    key: "mbbs",
+/** Artwork and default background for each slide design. Text, button and colours come from the CMS. */
+const DESIGNS: Record<HeroSlideDoc["design"], { background: string; art: React.ReactNode }> = {
+  abroad: { background: "linear-gradient(-56.785deg, rgb(92,169,255) 3.35%, rgb(35,94,209) 31.53%, rgb(8,58,188) 69.13%)", art: <Abroad /> },
+  domestic: { background: "linear-gradient(to top, #ffe168, #fdc730)", art: <Domestic /> },
+  mbbs: {
     background: "linear-gradient(249.92deg, rgb(17,211,193) 8.06%, rgb(0,88,80) 125.35%)",
-    lines: ["Study MBBS,", "Build a Career", "Save Lives"],
-    subtitle: "Your journey to become a doctor, Starts here",
-    cta: { label: "Apply Now", variant: "secondary", href: "/study-mbbs" },
     art: <img alt="" src="/home/hero/mbbs.webp" className="absolute top-[3.75rem] left-[49.875rem] h-[63.75rem] w-[62.875rem] object-contain object-bottom" />,
   },
-  {
-    key: "law",
+  law: {
     background: "linear-gradient(118.47deg, rgb(72,41,26) 0%, rgb(126,66,36) 54.57%, rgb(205,128,90) 99.16%)",
-    lines: ["Study Law,", "Lead with", "Justice"],
-    subtitle: "Build a rewarding career, Make an impact",
-    cta: { label: "Apply Now", variant: "primary", href: "/study-india" },
     art: <img alt="" src="/home/hero/law.webp" className="absolute top-[9.625rem] left-[60rem] h-[60.9375rem] w-[49.3125rem] object-contain object-bottom" />,
   },
-];
+};
 
-export default function Hero() {
+function background(s: HeroSlideDoc) {
+  if (s.backgroundFrom && s.backgroundTo) return `linear-gradient(-56deg, ${s.backgroundTo}, ${s.backgroundFrom})`;
+  if (s.backgroundFrom || s.backgroundTo) return `linear-gradient(${s.backgroundFrom ?? s.backgroundTo}, ${s.backgroundFrom ?? s.backgroundTo})`;
+  return DESIGNS[s.design]?.background ?? DESIGNS.abroad.background;
+}
+
+export default function Hero({ slides }: { slides: HeroSlideDoc[] }) {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
-    const id = setInterval(() => setActive((a) => (a + 1) % SLIDES.length), 6000);
+    if (slides.length < 2) return;
+    const id = setInterval(() => setActive((a) => (a + 1) % slides.length), 6000);
     return () => clearInterval(id);
-  }, [active]);
+  }, [active, slides.length]);
+
+  if (!slides.length) return null;
 
   return (
     <section className="relative h-[45rem] overflow-hidden md:h-[37.5rem] lg:h-[67.5rem]">
-      {SLIDES.map((s, i) => (
+      {slides.map((s, i) => (
         <div
-          key={s.key}
+          key={s._key}
           aria-hidden={i !== active}
           className={`absolute inset-0 transition-opacity duration-700 ${i === active ? "opacity-100" : "pointer-events-none opacity-0"}`}
-          style={{ backgroundImage: s.background }}
+          style={{ backgroundImage: background(s) }}
         >
           {/* Decorative artwork: desktop dimensions follow the fluid root; mobile has its own crop */}
           <div className="absolute right-0 bottom-0 h-[67.5rem] w-[120rem] origin-bottom-right scale-[0.4] overflow-hidden md:scale-[0.5] lg:scale-100">
-            {s.art}
+            {DESIGNS[s.design]?.art}
           </div>
 
           <div className="container-x relative pt-32 md:pt-48 lg:pt-[20.5625rem]">
-            <h1 className={`text-[2.75rem]/[1.2] font-bold tracking-[-0.05rem] md:text-[3.5rem] lg:text-title-1 ${s.dark ? "text-ink" : "text-white"}`}>
-              {s.lines[0]}
-              <br />
-              {s.lines[1]}
-              <br />
-              {s.lines[2]}
+            <h1 className={`text-[2.75rem]/[1.2] font-bold tracking-[-0.05rem] md:text-[3.5rem] lg:text-title-1 ${s.darkText ? "text-ink" : "text-white"}`}>
+              {[s.line1, s.line2, s.line3].filter(Boolean).map((line, j) => (
+                <span key={j}>
+                  {j > 0 && <br />}
+                  {line}
+                </span>
+              ))}
               {s.accent && <span className="ml-2.5 text-[2.375rem] font-normal text-gold md:text-[3rem] lg:text-title-2"> {s.accent}</span>}
             </h1>
-            <p className={`mt-6 text-base font-medium md:text-h6 ${s.dark ? "text-ink" : "text-soft-yellow"}`}>{s.subtitle}</p>
-            <div className="mt-9">
-              <Button href={s.cta.href} variant={s.cta.variant}>
-                {s.cta.label}
-              </Button>
-            </div>
+            {s.subtitle && <p className={`mt-6 text-base font-medium md:text-h6 ${s.darkText ? "text-ink" : "text-soft-yellow"}`}>{s.subtitle}</p>}
+            {s.button?.href && (
+              <div className="mt-9">
+                <Button href={s.button.href} variant={s.buttonStyle ?? "primary"}>
+                  {s.button.label}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       ))}
 
       <div className="container-x absolute inset-x-0 bottom-8 md:bottom-12 lg:bottom-[4.8125rem]">
         <div className="flex gap-1.5">
-          {SLIDES.map((s, i) => (
+          {slides.map((s, i) => (
             <button
-              key={s.key}
+              key={s._key}
               type="button"
               aria-label={`Show slide ${i + 1}`}
               onClick={() => setActive(i)}

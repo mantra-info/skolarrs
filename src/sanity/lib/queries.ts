@@ -146,3 +146,82 @@ export const PARTNERS = defineQuery(`*[_type == "partner"] | order(order asc) { 
 export type PartnerDoc = { name: string; logo: SanityImage; group: "abroad" | "india" };
 
 export type Seo = { title?: string; description?: string; image?: SanityImage };
+
+// ---------- homepage & site settings ----------
+
+export type Link = { label: string; href: string };
+type Img = NonNullable<SanityImage>;
+
+export const HOME = defineQuery(`*[_id == "homePage"][0]`);
+export type HeroSlideDoc = {
+  _key: string;
+  design: "abroad" | "domestic" | "mbbs" | "law";
+  line1: string;
+  line2?: string;
+  line3?: string;
+  accent?: string;
+  subtitle?: string;
+  button?: Link;
+  buttonStyle?: "primary" | "secondary";
+  darkText?: boolean;
+  backgroundFrom?: string;
+  backgroundTo?: string;
+  hidden?: boolean;
+};
+type Keyed<T> = T & { _key: string };
+export type HomeDoc = {
+  heroSlides?: HeroSlideDoc[];
+  strengthTitle?: string;
+  strengthBody?: PortableTextBlock[];
+  strengthPoints?: string[];
+  strengthButton?: Link;
+  strengthPhoto?: Img;
+  strengthStats?: Keyed<{ value: string; label: string; color?: string; icon?: Img }>[];
+  servicesTitle?: string;
+  servicesBody?: string;
+  servicesPoints?: string[];
+  servicesButton?: Link;
+  servicesImage?: Img;
+  journeyTitle?: string;
+  journeyBody?: string;
+  journeyCards?: Keyed<{ title: string; blurb?: string; color?: string; innerColor?: string; icon?: Img; photo?: Img; points?: string[]; button?: Link }>[];
+  destinationTitle?: string;
+  destinationBody?: PortableTextBlock[];
+  destinationButton?: Link;
+  coursesTitle?: string;
+  courses?: Keyed<{ title: string; description?: string; href?: string; color?: string; photoBackground?: string; photo?: Img; icon?: Img }>[];
+  coursesButton?: Link;
+  banners?: Keyed<{ heading?: string[]; image?: Img; button?: Link; buttonStyle?: "primary" | "secondary" }>[];
+  compareBefore?: CompareColumn;
+  compareAfter?: CompareColumn;
+  loansTitle?: string;
+  loansBody?: string;
+  loansPoints?: string[];
+  loansButton?: Link;
+  partnersCount?: string;
+  partnersTitle?: string;
+  partnersSubtitle?: string;
+  blogsTitle?: string;
+  blogsButton?: Link;
+};
+export type CompareColumn = { badge?: string; title?: string; subtitle?: string; items?: Keyed<{ label: string; icon?: Img; green?: boolean }>[] };
+
+export const LATEST_POSTS = defineQuery(
+  `*[_type == "post" && defined(slug.current)] | order(publishedAt desc)[0...5] { title, "slug": slug.current, category, coverImage, excerpt, publishedAt, readingTime }`,
+);
+export type PostCard = { title: string; slug: string; category?: string; coverImage?: Img; excerpt?: string; publishedAt?: string; readingTime?: number };
+
+export const SETTINGS = defineQuery(`*[_id == "siteSettings"][0]{ phones, email, address, whatsapp, socials, mapUrl, contactTitle, contactBody }`);
+export type SettingsDoc = {
+  phones?: string[];
+  email?: string;
+  address?: string;
+  whatsapp?: string;
+  socials?: { network: string; url: string }[];
+  mapUrl?: string;
+  contactTitle?: string;
+  contactBody?: string;
+};
+
+/** "+91 97904 44443" → "tel:+919790444443". */
+export const telHref = (phone: string) => `tel:${phone.replace(/[^\d+]/g, "")}`;

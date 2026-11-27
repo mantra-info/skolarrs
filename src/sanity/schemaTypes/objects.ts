@@ -113,4 +113,12 @@ export const eligibilityCard = defineType({
   preview: { select: { title: "title" } },
 });
 
-export const objects = [seo, labelValue, titleBody, imageCard, link, richText, altImage, eligibilityCard];
+/** Plain paragraphs where editors can only bold words (select text, press ⌘B). */
+export const simpleText = defineType({
+  name: "simpleText",
+  title: "Text",
+  type: "array",
+  of: [defineArrayMember({ type: "block", styles: [], lists: [], marks: { decorators: [{ title: "Bold", value: "strong" }], annotations: [] } })],
+});
+
+export const objects = [seo, labelValue, titleBody, imageCard, link, richText, altImage, eligibilityCard, simpleText];

@@ -1,47 +1,9 @@
-const BEFORE = [
-  { icon: "/home/compare/icon-confused.webp", label: "Confused" },
-  { icon: "/home/compare/icon-courses.webp", label: "Too many courses" },
-  { icon: "/home/compare/icon-colleges.webp", label: "Too many colleges" },
-  { icon: "/home/compare/icon-fees.webp", label: "Don’t know fess" },
-  { icon: "/home/compare/icon-eligibility.webp", label: "Don’t know eligibility" },
-  { icon: "/home/compare/icon-website.webp", label: "Don’t know where to apply" },
-];
+import { img } from "@/sanity/lib/image";
+import type { HomeDoc } from "@/sanity/lib/queries";
 
-const AFTER: { label: string; icon: React.ReactNode; green?: boolean }[] = [
-  {
-    label: "Career clarity",
-    icon: (
-      <span className="relative size-[3.25rem] shrink-0 overflow-hidden">
-        <img loading="lazy" src="/home/compare/edu-a.svg" alt="" className="absolute inset-[20.7%_17.82%_23.63%_5.86%]" />
-        <img loading="lazy" src="/home/compare/edu-b.svg" alt="" className="absolute inset-[6.06%_0]" />
-      </span>
-    ),
-  },
-  { label: "Course Selection", icon: <img loading="lazy" src="/home/compare/icon-courses-c.webp" alt="" className="size-[3.25rem] object-cover" /> },
-  { label: "College shortlist", icon: <img loading="lazy" src="/home/compare/icon-colleges-c.webp" alt="" className="size-[3.25rem] object-cover" /> },
-  { label: "Application", icon: <img loading="lazy" src="/home/compare/icon-application.webp" alt="" className="size-[3.25rem]" /> },
-  {
-    label: "Visa/documentation",
-    icon: (
-      <span className="relative size-[3.25rem] shrink-0 overflow-hidden">
-        <img loading="lazy" src="/home/compare/living-a.svg" alt="" className="absolute inset-[2.91%_8.98%_0_8.98%]" />
-        <img loading="lazy" src="/home/compare/living-b.svg" alt="" className="absolute inset-[0_3.12%_5.86%_3.12%]" />
-      </span>
-    ),
-  },
-  {
-    label: "New begining",
-    green: true,
-    icon: (
-      <span className="relative size-[3.25rem] shrink-0 overflow-hidden">
-        <img loading="lazy" src="/home/compare/resident-a.svg" alt="" className="absolute inset-[3.13%_0_3.13%_5.86%]" />
-        <img loading="lazy" src="/home/compare/resident-b.svg" alt="" className="absolute inset-[14.84%_6.05%_3.13%_0]" />
-      </span>
-    ),
-  },
-];
-
-export default function JourneyCompare() {
+export default function JourneyCompare({ home }: { home: HomeDoc }) {
+  const before = home.compareBefore ?? {};
+  const after = home.compareAfter ?? {};
   return (
     <section className="relative overflow-hidden bg-[#f1f1f1] pt-16 md:pt-20 lg:h-[72.5rem]">
       {/* Decorative skylines, planes and students (positions are % of the 1920x1160 Figma frame) */}
@@ -65,17 +27,17 @@ export default function JourneyCompare() {
       <div className="container-x relative flex flex-col items-center gap-6 pb-16 md:flex-row md:items-start md:justify-center lg:pb-0">
         <div className="flex w-full max-w-[26.6875rem] flex-col items-center gap-5">
           <div className="flex flex-col items-center gap-3 text-center">
-            <span className="rounded-[2rem] bg-[#8c9bab] px-5 py-1 text-lg font-medium text-white md:text-h5">Before Skolarrs</span>
-            <h3 className="w-[23.5625rem] max-w-full text-[2rem]/10 font-semibold tracking-[-0.01875rem] text-heading md:text-h3">A Confusing Journey</h3>
-            <p className="text-h6 font-medium text-paragraph">Too many questions, No directions</p>
+            <span className="rounded-[2rem] bg-[#8c9bab] px-5 py-1 text-lg font-medium text-white md:text-h5">{before.badge}</span>
+            <h3 className="w-[23.5625rem] max-w-full text-[2rem]/10 font-semibold tracking-[-0.01875rem] whitespace-pre-line text-heading md:text-h3">{before.title}</h3>
+            <p className="text-h6 font-medium text-paragraph">{before.subtitle}</p>
           </div>
           <ul className="flex w-full flex-col gap-2">
-            {BEFORE.map((b) => (
+            {(before.items ?? []).map((b) => (
               <li
-                key={b.label}
+                key={b._key}
                 className="flex items-center gap-5 rounded-3xl border-[0.5px] border-[#cecece] bg-white px-6 py-3 text-h6 font-medium text-[#3c3c3c] drop-shadow-[0px_4px_7.5px_rgba(0,0,0,0.05)]"
               >
-                <img loading="lazy" src={b.icon} alt="" className="size-[3.25rem] object-cover" />
+                {b.icon && <img loading="lazy" src={img(b.icon, 120)} alt="" className="size-[3.25rem] object-cover" />}
                 {b.label}
               </li>
             ))}
@@ -84,23 +46,19 @@ export default function JourneyCompare() {
 
         <div className="flex w-full max-w-[26.6875rem] flex-col items-center gap-5">
           <div className="flex flex-col items-center gap-3 text-center">
-            <span className="bg-secondary-gradient rounded-[2rem] px-5 py-1 text-lg font-medium text-ink md:text-h5">With Skolarrs</span>
-            <h3 className="w-[23.5625rem] max-w-full text-[2rem]/10 font-semibold tracking-[-0.01875rem] text-[#083a8c] md:text-h3">
-              A Smarter
-              <br />
-              Journey
-            </h3>
-            <p className="text-h6 font-medium text-paragraph">Expert guidance, every step of the way</p>
+            <span className="bg-secondary-gradient rounded-[2rem] px-5 py-1 text-lg font-medium text-ink md:text-h5">{after.badge}</span>
+            <h3 className="w-[23.5625rem] max-w-full text-[2rem]/10 font-semibold tracking-[-0.01875rem] whitespace-pre-line text-[#083a8c] md:text-h3">{after.title}</h3>
+            <p className="text-h6 font-medium text-paragraph">{after.subtitle}</p>
           </div>
           <ul className="flex w-full flex-col gap-2">
-            {AFTER.map((a) => (
+            {(after.items ?? []).map((a) => (
               <li
-                key={a.label}
+                key={a._key}
                 className={`flex items-center gap-5 rounded-3xl border-[0.5px] px-6 py-3 text-h6 font-medium text-white ${
                   a.green ? "border-[#164b35] bg-[#22a06b]" : "bg-primary-gradient border-[#083a8c]"
                 }`}
               >
-                {a.icon}
+                {a.icon && <img loading="lazy" src={img(a.icon, 120)} alt="" className="size-[3.25rem] shrink-0 object-cover" />}
                 {a.label}
               </li>
             ))}

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Button from "./Button";
 import FooterSection from "./FooterSection";
+import { sanityFetch } from "@/sanity/lib/fetch";
+import { SETTINGS, telHref, type SettingsDoc } from "@/sanity/lib/queries";
 
 type Col = { title: string; links: { label: string; href: string }[] };
 
@@ -47,12 +49,13 @@ const HELP: Col = {
   })),
 };
 
-const SOCIAL = [
-  { label: "Facebook", src: "/layout/facebook.svg", w: 18.66, h: 32.74, href: "https://facebook.com" },
-  { label: "Instagram", src: "/layout/instagram.svg", w: 28.06, h: 28.06, href: "https://instagram.com" },
-  { label: "WhatsApp", src: "/layout/whatsapp.svg", w: 32.92, h: 32.74, href: "https://wa.me/919790444443" },
-  { label: "YouTube", src: "/layout/youtube.svg", w: 41.63, h: 28.06, href: "https://youtube.com" },
-];
+/** Icons for the social networks editors can add in Site settings. */
+const SOCIAL_ICONS: Record<string, { src: string; w: number; h: number }> = {
+  Facebook: { src: "/layout/facebook.svg", w: 18.66, h: 32.74 },
+  Instagram: { src: "/layout/instagram.svg", w: 28.06, h: 28.06 },
+  WhatsApp: { src: "/layout/whatsapp.svg", w: 32.92, h: 32.74 },
+  YouTube: { src: "/layout/youtube.svg", w: 41.63, h: 28.06 },
+};
 
 function Heading({ children }: { children: React.ReactNode }) {
   return <p className="px-4 pt-4 pb-2 text-h6 font-semibold text-gold sm:py-5">{children}</p>;
@@ -72,7 +75,12 @@ function Divider() {
   return <span aria-hidden className="hidden h-[3.375rem] w-px bg-white/20 md:block" />;
 }
 
-export default function Footer() {
+export default async function Footer() {
+  const settings = (await sanityFetch<SettingsDoc | null>({ query: SETTINGS, tags: ["siteSettings"] })) ?? {};
+  const social = (settings.socials ?? []).filter((s) => s.url && SOCIAL_ICONS[s.network]);
+  // Office line first, as in the design.
+  const phones = [...(settings.phones ?? [])].sort((a, b) => Number(a.startsWith("+")) - Number(b.startsWith("+")));
+
   return (
     <footer className="relative bg-footer pt-8 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:pt-10">
       <div className="container-x flex flex-col gap-5">
@@ -105,26 +113,23 @@ export default function Footer() {
             <div className="order-first mb-2 flex flex-col gap-[0.3125rem] sm:order-none sm:mb-0">
               <div>
                 <Heading>Contact Us</Heading>
-                <a href="tel:04224370044" className={CONTACT_LINK}>
-                  0422 - 437 00 44
-                </a>
-                <a href="tel:+919790444443" className={CONTACT_LINK}>
-                  +91 97904 44443
-                </a>
-                <a href="mailto:info@skolarssolutions.com" className={CONTACT_LINK}>
-                  info@skolarssolutions.com
-                </a>
+                {phones.map((p) => (
+                  <a key={p} href={telHref(p)} className={CONTACT_LINK}>
+                    {p}
+                  </a>
+                ))}
+                {settings.email && (
+                  <a href={`mailto:${settings.email}`} className={CONTACT_LINK}>
+                    {settings.email}
+                  </a>
+                )}
               </div>
-              <div>
-                <Heading>Address</Heading>
-                <address className="px-4 py-2 text-h6 font-medium not-italic text-white">
-                  1515, 3rd Floor, The Grand Hub
-                  <br />
-                  Opp Varatharaja Mill, Avinashi Road
-                  <br />
-                  Peelamedu, Coimbatore - 641004
-                </address>
-              </div>
+              {settings.address && (
+                <div>
+                  <Heading>Address</Heading>
+                  <address className="whitespace-pre-line px-4 py-2 text-h6 font-medium not-italic text-white">{settings.address}</address>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -133,11 +138,14 @@ export default function Footer() {
 
         <div className="flex flex-col items-center gap-6 lg:flex-row lg:justify-between">
           <div className="flex h-[3.4375rem] items-center gap-6 px-2.5 sm:gap-12">
-            {SOCIAL.map((s) => (
-              <a key={s.label} href={s.href} target="_blank" rel="noreferrer" aria-label={s.label} className="flex size-11 items-center justify-center transition hover:opacity-80">
-                <img loading="lazy" src={s.src} alt="" style={{ width: `${s.w / 16}rem`, height: `${s.h / 16}rem` }} />
-              </a>
-            ))}
+            {social.map((s) => {
+              const icon = SOCIAL_ICONS[s.network];
+              return (
+                <a key={s.network} href={s.url} target="_blank" rel="noreferrer" aria-label={s.network} className="flex size-11 items-center justify-center transition hover:opacity-80">
+                  <img loading="lazy" src={icon.src} alt="" style={{ width: `${icon.w / 16}rem`, height: `${icon.h / 16}rem` }} />
+                </a>
+              );
+            })}
           </div>
 
           <div className="grid grid-cols-3 place-items-center gap-x-8 gap-y-5 md:flex md:flex-wrap md:items-center md:justify-center md:gap-10">

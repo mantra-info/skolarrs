@@ -8,7 +8,10 @@ export const siteSettings = defineType({
   fields: [
     defineField({ name: "phones", type: "array", of: [defineArrayMember({ type: "string" })], description: "Shown in Contact section, e.g. +91 97904 44443" }),
     defineField({ name: "email", type: "string" }),
-    defineField({ name: "address", type: "text", rows: 3 }),
+    defineField({ name: "address", type: "text", rows: 3, description: "Shown in the footer. Each line on its own line." }),
+    defineField({ name: "mapUrl", title: "Google Maps link", type: "url", description: "Opened when visitors click the map in the contact section." }),
+    defineField({ name: "contactTitle", title: "Contact section title", type: "string" }),
+    defineField({ name: "contactBody", title: "Contact section text", type: "text", rows: 2 }),
     defineField({ name: "whatsapp", title: "WhatsApp number", type: "string", description: "Digits only with country code, e.g. 919790444443" }),
     defineField({
       name: "socials",
@@ -18,7 +21,7 @@ export const siteSettings = defineType({
         defineArrayMember({
           type: "object",
           fields: [
-            defineField({ name: "network", type: "string", options: { list: ["Facebook", "Instagram", "YouTube", "LinkedIn", "X"] } }),
+            defineField({ name: "network", type: "string", options: { list: ["Facebook", "Instagram", "WhatsApp", "YouTube", "LinkedIn", "X"] } }),
             defineField({ name: "url", type: "url" }),
           ],
           preview: { select: { title: "network", subtitle: "url" } },

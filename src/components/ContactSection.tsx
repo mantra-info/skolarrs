@@ -1,57 +1,24 @@
-"use client";
+import { sanityFetch } from "@/sanity/lib/fetch";
+import { SETTINGS, telHref, type SettingsDoc } from "@/sanity/lib/queries";
+import ContactForm from "./ContactForm";
 
-import { useState } from "react";
+const MAP_URL = "https://maps.google.com/?q=The+Grand+Hub+Avinashi+Road+Peelamedu+Coimbatore";
 
-const inputCls =
-  "h-[3.0625rem] w-full rounded-xl border-[0.5px] border-[#7079a4] px-5 text-sm tracking-[-0.01rem] text-heading outline-none placeholder:text-[#3b436d] focus:border-azure focus:ring-2 focus:ring-azure/20";
-
-const CONTACTS = [
-  { label: "+91 97904 44443", href: "tel:+919790444443" },
-  { label: "0422 - 437 00 44", href: "tel:04224370044" },
-  { label: "info@skolarrssolutions.com", href: "mailto:info@skolarrssolutions.com" },
-];
-
-export default function ContactSection() {
-  const [sent, setSent] = useState(false);
+export default async function ContactSection() {
+  const settings = (await sanityFetch<SettingsDoc | null>({ query: SETTINGS, tags: ["siteSettings"] })) ?? {};
+  const contacts = [
+    ...(settings.phones ?? []).map((p) => ({ label: p, href: telHref(p) })),
+    ...(settings.email ? [{ label: settings.email, href: `mailto:${settings.email}` }] : []),
+  ];
 
   return (
     <section id="contact" className="scroll-mt-8 bg-surface pt-16 pb-10 md:pt-20">
       <div className="container-x flex flex-col items-center gap-5">
         <div className="flex w-full max-w-[82.6875rem] flex-col overflow-hidden rounded-3xl lg:flex-row">
-          <form
-            className="flex flex-col gap-4 bg-white p-6 md:p-7 lg:w-[42.9375rem] lg:shrink-0"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSent(true);
-              e.currentTarget.reset();
-            }}
-          >
-            <h2 className="text-[1.875rem]/[2.375rem] font-bold tracking-[-0.01875rem] text-ink md:text-h3">Get In Touch</h2>
-            <p className="max-w-[33.9375rem] text-sm leading-5 tracking-[-0.01rem] text-[#3c3c3c]">
-              Our expert counselors are here to guide you through every step of your domestic and international education journey.
-            </p>
-            <span className="h-px w-full bg-[#e5e5e5]" />
-            <div className="grid gap-4 sm:grid-cols-2">
-              <input required name="name" placeholder="Name" aria-label="Name" className={inputCls} />
-              <input required name="phone" type="tel" placeholder="Phone Number" aria-label="Phone Number" className={inputCls} />
-              <input required name="email" type="email" placeholder="Email Address" aria-label="Email Address" className={inputCls} />
-              <input name="city" placeholder="City" aria-label="City" className={inputCls} />
-            </div>
-            <textarea name="message" placeholder="Write your mesaage" aria-label="Message" className={`${inputCls} h-[7.1875rem] resize-none py-6`} />
-            <div className="flex flex-wrap items-center gap-4">
-              <button
-                type="submit"
-                className="bg-primary-gradient inline-flex h-[4.5rem] items-center gap-2.5 rounded-full px-10 text-h6 font-medium text-[color:var(--theme-btn-text,#fff)] transition hover:brightness-110"
-              >
-                Submit
-                <img loading="lazy" src="/layout/arrow-white.svg" alt="" className="size-6 [filter:var(--theme-btn-art,none)]" />
-              </button>
-              {sent && <p className="text-label font-medium text-[#22a06b]">Thanks! Our counsellor will reach out shortly.</p>}
-            </div>
-          </form>
+          <ContactForm title={settings.contactTitle ?? "Get In Touch"} body={settings.contactBody} />
 
           <a
-            href="https://maps.google.com/?q=The+Grand+Hub+Avinashi+Road+Peelamedu+Coimbatore"
+            href={settings.mapUrl || MAP_URL}
             target="_blank"
             rel="noreferrer"
             aria-label="Open our location in Google Maps"
@@ -65,7 +32,7 @@ export default function ContactSection() {
         <div className="flex w-full max-w-[82.625rem] flex-col items-center justify-between gap-4 py-5 lg:flex-row">
           <p className="px-2 py-4 text-[1.625rem]/[2.375rem] font-semibold tracking-[-0.0125rem] text-[#2b2827] md:text-h4">Need Assistance?</p>
           <div className="flex flex-col items-center gap-4 lg:flex-row lg:gap-[2.1875rem]">
-            {CONTACTS.map((c, i) => (
+            {contacts.map((c, i) => (
               <div key={c.label} className="flex items-center gap-[2.1875rem]">
                 {i > 0 && <span className="hidden h-[3.125rem] w-px bg-[#cecece] lg:block" />}
                 <a href={c.href} className="group flex items-center gap-2.5 text-xl/[1.875rem] font-semibold tracking-[-0.009375rem] text-[#2b2827] md:text-h5">
