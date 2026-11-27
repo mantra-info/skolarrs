@@ -153,10 +153,13 @@ export type Link = { label: string; href: string };
 type Img = NonNullable<SanityImage>;
 
 export const HOME = defineQuery(`*[_id == "homePage"][0]`);
+export type HotspotImage = Img & { hotspot?: { x: number; y: number } };
 export type HeroSlideDoc = {
   _key: string;
-  design: "abroad" | "domestic" | "mbbs" | "law";
-  line1: string;
+  image?: HotspotImage;
+  mobileImage?: HotspotImage;
+  design?: "abroad" | "domestic" | "mbbs" | "law";
+  line1?: string;
   line2?: string;
   line3?: string;
   accent?: string;
@@ -164,6 +167,7 @@ export type HeroSlideDoc = {
   button?: Link;
   buttonStyle?: "primary" | "secondary";
   darkText?: boolean;
+  shade?: boolean;
   backgroundFrom?: string;
   backgroundTo?: string;
   hidden?: boolean;
