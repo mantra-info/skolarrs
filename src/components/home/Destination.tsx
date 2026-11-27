@@ -1,6 +1,8 @@
 import Button from "@/components/Button";
+import SimpleText from "@/components/SimpleText";
+import type { HomeDoc } from "@/sanity/lib/queries";
 
-export default function Destination() {
+export default function Destination({ home }: { home: HomeDoc }) {
   return (
     <section className="relative overflow-hidden bg-soft-yellow">
       <div className="container-x relative flex flex-col items-center gap-12 py-16 lg:h-[45.25rem] lg:flex-row lg:justify-end lg:gap-[8.25rem] lg:py-[6.25rem]">
@@ -22,14 +24,18 @@ export default function Destination() {
 
         <div className="relative flex w-full flex-col gap-12 lg:w-[43.375rem]">
           <div className="flex flex-col gap-10">
-            <h2 className="max-w-[32.875rem] text-[2rem]/[2.5rem] font-bold tracking-[-0.025rem] text-heading md:text-h2">Find Your Perfect Abroad Study Destination</h2>
-            <p className="text-lg text-paragraph md:text-h5 md:tracking-[-0.009375rem]">
-              Choose what suits you from <strong className="font-semibold text-heading">250+ global universities</strong> in, world over.
-            </p>
+            <h2 className="max-w-[32.875rem] text-[2rem]/[2.5rem] font-bold tracking-[-0.025rem] text-heading md:text-h2">{home.destinationTitle}</h2>
+            <SimpleText
+              value={home.destinationBody}
+              className="text-lg text-paragraph md:text-h5 md:tracking-[-0.009375rem]"
+              strongClassName="font-semibold text-heading"
+            />
           </div>
-          <div>
-            <Button href="/study-abroad">Explore Countries</Button>
-          </div>
+          {home.destinationButton?.href && (
+            <div>
+              <Button href={home.destinationButton.href}>{home.destinationButton.label}</Button>
+            </div>
+          )}
         </div>
       </div>
 

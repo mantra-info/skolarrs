@@ -59,6 +59,7 @@ export const post = defineType({
     defineField({ name: "excerpt", type: "text", rows: 3 }),
     defineField({ name: "body", type: "richText" }),
     defineField({ name: "author", type: "string" }),
+    defineField({ name: "readingTime", title: "Reading time (minutes)", type: "number" }),
     defineField({ name: "publishedAt", type: "datetime", initialValue: () => new Date().toISOString() }),
     defineField({ name: "seo", type: "seo" }),
   ],

@@ -1,17 +1,10 @@
 import Button from "@/components/Button";
 import CheckItem from "@/components/CheckItem";
 import SectionHeading from "@/components/SectionHeading";
+import type { HomeDoc } from "@/sanity/lib/queries";
 import EmiCalculator from "./EmiCalculator";
 
-const POINTS = [
-  "Study Loans through 20+ leading banks",
-  "Financial structuring to suit your university",
-  "Hassle free documentation",
-  "Pre-visa disbursal of loans",
-  "Forex and Travel Insurance",
-];
-
-export default function Loans() {
+export default function Loans({ home }: { home: HomeDoc }) {
   return (
     <section
       className="relative overflow-hidden py-16 md:py-20"
@@ -24,24 +17,26 @@ export default function Loans() {
         <SectionHeading
           light
           className="gap-[1.375rem]!"
-          title="Reach New Heights with Education Loans"
-          description="Availing an education loan to study in your dream university has never been easier!"
+          title={home.loansTitle}
+          description={home.loansBody}
         />
         <img loading="lazy" src="/home/loans/divider-light.svg" alt="" className="h-px w-full" />
         <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex flex-col gap-10 lg:pt-[6.25rem]">
             <ul className="flex flex-col text-lg font-semibold text-white md:text-h5">
-              {POINTS.map((p) => (
+              {(home.loansPoints ?? []).map((p) => (
                 <CheckItem key={p} className="gap-5! py-5 md:py-7">
                   {p}
                 </CheckItem>
               ))}
             </ul>
-            <div>
-              <Button href="/services" variant="secondary">
-                More Details
-              </Button>
-            </div>
+            {home.loansButton?.href && (
+              <div>
+                <Button href={home.loansButton.href} variant="secondary">
+                  {home.loansButton.label}
+                </Button>
+              </div>
+            )}
           </div>
           <EmiCalculator />
         </div>
