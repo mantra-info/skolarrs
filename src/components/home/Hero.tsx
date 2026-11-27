@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Button from "@/components/Button";
 import Linework from "@/components/Linework";
 
-import type { HeroSlideDoc } from "@/sanity/lib/queries";
+import { img } from "@/sanity/lib/image";
+import type { HeroSlideDoc, HotspotImage } from "@/sanity/lib/queries";
 
 /** Absolutely positioned artwork laid out on the 1920x1080 Figma frame. */
 function Abroad() {
@@ -70,7 +71,7 @@ function Domestic() {
 }
 
 /** Artwork and default background for each slide design. Text, button and colours come from the CMS. */
-const DESIGNS: Record<HeroSlideDoc["design"], { background: string; art: React.ReactNode }> = {
+const DESIGNS: Record<NonNullable<HeroSlideDoc["design"]>, { background: string; art: React.ReactNode }> = {
   abroad: { background: "linear-gradient(-56.785deg, rgb(92,169,255) 3.35%, rgb(35,94,209) 31.53%, rgb(8,58,188) 69.13%)", art: <Abroad /> },
   domestic: { background: "linear-gradient(to top, #ffe168, #fdc730)", art: <Domestic /> },
   mbbs: {
@@ -86,7 +87,29 @@ const DESIGNS: Record<HeroSlideDoc["design"], { background: string; art: React.R
 function background(s: HeroSlideDoc) {
   if (s.backgroundFrom && s.backgroundTo) return `linear-gradient(-56deg, ${s.backgroundTo}, ${s.backgroundFrom})`;
   if (s.backgroundFrom || s.backgroundTo) return `linear-gradient(${s.backgroundFrom ?? s.backgroundTo}, ${s.backgroundFrom ?? s.backgroundTo})`;
-  return DESIGNS[s.design]?.background ?? DESIGNS.abroad.background;
+  return DESIGNS[s.design ?? "abroad"]?.background ?? DESIGNS.abroad.background;
+}
+
+/** Keeps the editor's hotspot in view when the banner is cropped to the slide's shape. */
+const focus = (image?: HotspotImage) => (image?.hotspot ? `${image.hotspot.x * 100}% ${image.hotspot.y * 100}%` : "center");
+
+/** Editor-uploaded banner that fills the whole slide, with an optional tall crop for phones. */
+function Banner({ slide, first }: { slide: HeroSlideDoc; first: boolean }) {
+  const mobile = slide.mobileImage ?? slide.image;
+  return (
+    <picture>
+      <source media="(max-width: 767px)" srcSet={img(mobile, 1080)} />
+      <img
+        src={img(slide.image, 2400)}
+        alt=""
+        fetchPriority={first ? "high" : undefined}
+        loading={first ? "eager" : "lazy"}
+        className="absolute inset-0 size-full object-cover md:[object-position:var(--focus)]"
+        style={{ objectPosition: focus(mobile), ["--focus" as string]: focus(slide.image) }}
+      />
+      {slide.shade && <span aria-hidden className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/10 md:bg-gradient-to-r md:from-black/65 md:via-black/25 md:to-transparent" />}
+    </picture>
+  );
 }
 
 export default function Hero({ slides }: { slides: HeroSlideDoc[] }) {
@@ -107,23 +130,29 @@ export default function Hero({ slides }: { slides: HeroSlideDoc[] }) {
           key={s._key}
           aria-hidden={i !== active}
           className={`absolute inset-0 transition-opacity duration-700 ${i === active ? "opacity-100" : "pointer-events-none opacity-0"}`}
-          style={{ backgroundImage: background(s) }}
+          style={s.image ? undefined : { backgroundImage: background(s) }}
         >
-          {/* Decorative artwork: desktop dimensions follow the fluid root; mobile has its own crop */}
-          <div className="absolute right-0 bottom-0 h-[67.5rem] w-[120rem] origin-bottom-right scale-[0.4] overflow-hidden md:scale-[0.5] lg:scale-100">
-            {DESIGNS[s.design]?.art}
-          </div>
+          {s.image ? (
+            <Banner slide={s} first={i === 0} />
+          ) : (
+            /* Decorative artwork: desktop dimensions follow the fluid root; mobile has its own crop */
+            <div className="absolute right-0 bottom-0 h-[67.5rem] w-[120rem] origin-bottom-right scale-[0.4] overflow-hidden md:scale-[0.5] lg:scale-100">
+              {DESIGNS[s.design ?? "abroad"]?.art}
+            </div>
+          )}
 
           <div className="container-x relative pt-32 md:pt-48 lg:pt-[20.5625rem]">
-            <h1 className={`text-[2.75rem]/[1.2] font-bold tracking-[-0.05rem] md:text-[3.5rem] lg:text-title-1 ${s.darkText ? "text-ink" : "text-white"}`}>
-              {[s.line1, s.line2, s.line3].filter(Boolean).map((line, j) => (
-                <span key={j}>
-                  {j > 0 && <br />}
-                  {line}
-                </span>
-              ))}
-              {s.accent && <span className="ml-2.5 text-[2.375rem] font-normal text-gold md:text-[3rem] lg:text-title-2"> {s.accent}</span>}
-            </h1>
+            {(s.line1 || s.line2 || s.line3) && (
+              <h1 className={`text-[2.75rem]/[1.2] font-bold tracking-[-0.05rem] md:text-[3.5rem] lg:text-title-1 ${s.darkText ? "text-ink" : "text-white"}`}>
+                {[s.line1, s.line2, s.line3].filter(Boolean).map((line, j) => (
+                  <span key={j}>
+                    {j > 0 && <br />}
+                    {line}
+                  </span>
+                ))}
+                {s.accent && <span className="ml-2.5 text-[2.375rem] font-normal text-gold md:text-[3rem] lg:text-title-2"> {s.accent}</span>}
+              </h1>
+            )}
             {s.subtitle && <p className={`mt-6 text-base font-medium md:text-h6 ${s.darkText ? "text-ink" : "text-soft-yellow"}`}>{s.subtitle}</p>}
             {s.button?.href && (
               <div className="mt-9">
