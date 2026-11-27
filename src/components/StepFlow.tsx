@@ -4,9 +4,9 @@ export type Step = { title: string; body: string; color: string };
 export default function StepFlow({ title, steps, className = "bg-[#fafafa]" }: { title: string; steps: Step[]; className?: string }) {
   return (
     <section className={`py-16 md:py-20 ${className}`}>
-      <div className="container-x flex flex-col items-center gap-[4.5rem]">
+      <div className="container-x flex flex-col items-center gap-8 md:gap-[4.5rem]">
         <h2 className="text-center text-[1.625rem]/8 font-bold tracking-[-0.0125rem] text-ink md:text-h4">{title}</h2>
-        <div className="grid w-full grid-cols-1 gap-x-4 gap-y-16 sm:grid-cols-2 lg:flex lg:items-stretch lg:justify-between">
+        <div className="mobile-rail grid w-full grid-cols-1 gap-x-4 gap-y-16 [--rail-item:72%] max-md:pt-10 max-md:pb-1 sm:grid-cols-2 lg:flex lg:items-stretch lg:justify-between">
           {steps.map((s, i) => (
             <div key={s.title} className="contents">
               {i > 0 && (

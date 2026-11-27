@@ -134,7 +134,7 @@ export default async function CountryPage({ params }: Params) {
                     className="group flex h-[5.9375rem] items-center gap-5 rounded-3xl border-[0.5px] border-[#e3e3e3] bg-white px-5 py-2 transition hover:shadow-lg"
                   >
                     <img loading="lazy" src={img(u.logo, 400)} alt="" className="h-12 w-[7.5rem] shrink-0 object-contain" />
-                    <span className="flex-1 text-label font-medium text-grey-500">{u.name}</span>
+                    <span className="flex-1 text-label font-medium text-grey-500 max-md:min-w-0 max-md:[overflow-wrap:anywhere]">{u.name}</span>
                     <img loading="lazy" src="/icons/arrow-uni.svg" alt="" className="size-6 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </Link>
                 ))}
@@ -145,9 +145,9 @@ export default async function CountryPage({ params }: Params) {
           <section className="container-x flex flex-col items-center gap-12 py-16 md:py-20">
             <H2>Top Courses in {name}</H2>
             <Lead>{d.coursesBody}</Lead>
-            <div className="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid w-full grid-cols-2 gap-3 lg:grid-cols-3">
               {d.courses?.map((c) => (
-                <div key={c} className="flex h-[5.9375rem] items-center justify-center rounded-3xl border-[0.5px] border-[color:var(--theme-course-border)] bg-[color:var(--theme-course-bg)] px-5 text-center text-h6 font-medium text-[color:var(--theme-course-text)]">
+                <div key={c} className="flex min-h-[4.5rem] items-center justify-center rounded-2xl border-[0.5px] border-[color:var(--theme-course-border)] bg-[color:var(--theme-course-bg)] px-3 py-3 text-center text-sm md:h-[5.9375rem] md:rounded-3xl md:px-5 md:py-0 md:text-h6 font-medium text-[color:var(--theme-course-text)]">
                   {c}
                 </div>
               ))}
@@ -159,7 +159,7 @@ export default async function CountryPage({ params }: Params) {
               <div className="container-x flex flex-col items-center gap-12">
                 <H2 color="var(--theme-eligibility-text, var(--color-ink))">Eligibility Criteria to Study in {name}</H2>
                 <Lead color="var(--theme-eligibility-text, #3c3c3c)">{d.eligibilityBody}</Lead>
-                <div className="flex w-full flex-col gap-6 lg:flex-row">
+                <div className="mobile-rail flex w-full flex-col gap-6 [--rail-item:88%] max-md:gap-3 lg:flex-row">
                   {d.eligibility.map((card) => (
                     <EligibilityCard key={card.title} title={card.title}>
                       {card.levels?.map((level) => (
@@ -205,7 +205,7 @@ export default async function CountryPage({ params }: Params) {
           <section className="container-x flex flex-col items-center gap-12 py-16 md:py-20">
             <H2 className="max-w-[40rem]">Application Requirements to Study in {name}</H2>
             <Lead>{d.applicationBody}</Lead>
-            <div className="flex w-full flex-wrap justify-center gap-5">
+            <div className="mobile-rail flex w-full flex-wrap justify-center gap-5 [--rail-item:80%] max-md:gap-3">
               {d.requirements?.map((r) => (
                 <div
                   key={r.title}

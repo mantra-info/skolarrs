@@ -19,6 +19,13 @@ Phone/tablet content uses normal flow, wrapping and stacked sections. The small
 home promotional tiles use aspect ratios, percentage positioning and container
 query typography. About/Services hero artwork follows the copy on mobile.
 
+Below 48rem, sets of large cards use the `mobile-rail` utility (globals.css): a
+swipeable, snap-scrolling row that bleeds to the screen edges with the next card
+peeking in. Set the card width with `[--rail-item:80%]`. Small items (destination
+and course tiles) use two-column grids instead. Every phone-only change is
+scoped with `max-md:` or the rail's own media query, so `md` and `lg` layouts
+render pixel-identical to before.
+
 ## Verification
 
 Run `npm run build` and `npm run start -- --hostname 127.0.0.1` in separate steps.

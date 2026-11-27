@@ -22,7 +22,7 @@ export default async function Events() {
     <section id="events" className="overflow-hidden bg-surface py-16 md:py-20">
       <div className="container-x flex flex-col gap-12">
         <h2 className="text-center text-[1.875rem]/[2.375rem] font-bold tracking-[-0.01875rem] text-ink md:text-h3">Featured Events</h2>
-        <div className="no-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto">
+        <div className="no-scrollbar mobile-rail flex snap-x snap-mandatory gap-6 overflow-x-auto [--rail-item:85%] max-md:gap-4">
           {events.map((e, i) => (
             <article
               key={i}

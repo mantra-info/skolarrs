@@ -44,7 +44,7 @@ export default async function CourseCategoryPage({ params }: Params) {
           Apply Now
         </Button>
         {!!c.benefits?.length && (
-          <div className="grid w-full gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mobile-rail grid w-full gap-5 [--rail-item:85%] max-md:gap-3 md:grid-cols-2 lg:grid-cols-3">
             {c.benefits.map((a) => (
               <div key={a.title} className="flex flex-col gap-[2.6875rem] rounded-3xl bg-[#f7f8f9] p-4">
                 <div className="relative h-[15.625rem] overflow-hidden rounded-2xl">
@@ -62,7 +62,7 @@ export default async function CourseCategoryPage({ params }: Params) {
         <section className="bg-[#e9f2ff] py-16 md:py-20">
           <div className="container-x flex flex-col gap-[2.6875rem]">
             <h2 className="text-[1.625rem]/8 font-semibold tracking-[-0.0125rem] text-ink md:text-h4">Trending {c.title} courses</h2>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mobile-rail grid gap-5 [--rail-item:70%] max-md:gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {c.trending.map((t) => (
                 <div key={t.title} className="flex flex-col gap-[2.6875rem] rounded-3xl border-[0.5px] border-[#b6c2cf] bg-white p-4">
                   <div className="relative h-[15.625rem] overflow-hidden rounded-2xl">

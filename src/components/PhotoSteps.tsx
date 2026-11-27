@@ -6,9 +6,9 @@ export default function PhotoSteps({ title, steps }: { title: string; steps: Pho
     <section className="bg-[#fafafa] py-16 md:py-20">
       <div className="container-x flex flex-col items-center gap-10">
         <h2 className="text-center text-[1.625rem]/8 font-bold tracking-[-0.0125rem] text-ink md:text-h4">{title}</h2>
-        <div className="grid w-full gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mobile-rail grid w-full gap-6 [--rail-item:78%] max-md:gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {steps.map((s) => (
-            <div key={s.title} className="flex h-[29.75rem] flex-col gap-6 rounded-3xl border-[0.5px] bg-white p-5" style={{ borderColor: s.color }}>
+            <div key={s.title} className="flex h-[25rem] flex-col md:h-[29.75rem] gap-6 rounded-3xl border-[0.5px] bg-white p-5" style={{ borderColor: s.color }}>
               <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl">
                 <img loading="lazy" src={s.image} alt="" className="absolute inset-0 size-full object-cover" />
               </div>

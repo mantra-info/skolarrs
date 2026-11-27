@@ -32,13 +32,13 @@ export default function UnlockBanner({
             <h2 className="max-w-[21.1875rem] text-[1.875rem]/[2.375rem] font-bold tracking-[-0.01875rem] text-white md:text-h3">{title}</h2>
             <p className="text-label text-[#e8e8e8]">{body}</p>
           </div>
-          <div className="flex flex-wrap items-center gap-8 md:gap-12">
+          <div className="grid w-full grid-cols-3 gap-2 md:flex md:w-auto md:flex-wrap md:items-center md:gap-12">
             {stats.map((s, i) => (
-              <div key={s.label} className="flex items-center gap-8 md:gap-12">
-                {i > 0 && <span className="h-14 w-px bg-white/40" />}
+              <div key={s.label} className="flex items-center justify-center gap-8 md:gap-12">
+                {i > 0 && <span className="hidden h-14 w-px bg-white/40 md:block" />}
                 <div className="flex flex-col items-center text-center">
-                  <p className="bg-secondary-gradient bg-clip-text text-[2rem]/[2.375rem] font-bold tracking-[-0.0125rem] text-transparent">{s.value}</p>
-                  <p className="text-h6 text-white">{s.label}</p>
+                  <p className="bg-secondary-gradient bg-clip-text text-[1.625rem]/[2rem] font-bold md:text-[2rem]/[2.375rem] tracking-[-0.0125rem] text-transparent">{s.value}</p>
+                  <p className="text-sm text-white md:text-h6">{s.label}</p>
                 </div>
               </div>
             ))}

@@ -61,7 +61,7 @@ export default async function Blogs({ home }: { home: HomeDoc }) {
           {rest.length > 0 && (
             <>
               <span className="hidden w-px self-stretch bg-[#e0e0e0] lg:block" />
-              <div className="grid flex-1 gap-3 sm:grid-cols-2">
+              <div className="mobile-rail grid flex-1 gap-3 [--rail-item:75%] sm:grid-cols-2">
                 {rest.map((b) => (
                   <article key={b.slug} className={`${CARD} h-[23.5rem]`}>
                     <div className="relative flex-1 overflow-hidden rounded-2xl">

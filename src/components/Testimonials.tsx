@@ -17,17 +17,17 @@ export default function Testimonials({
           <h2 className="text-[1.875rem]/[2.375rem] font-bold tracking-[-0.01875rem] text-[color:var(--theme-section-text,#fff)] md:text-h3">{title}</h2>
           <p className="text-label text-[color:var(--theme-section-text,#fdfdfd)]">{body}</p>
         </div>
-        <div className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto">
+        <div className="no-scrollbar mobile-rail flex snap-x snap-mandatory gap-5 overflow-x-auto [--rail-item:15rem] max-md:gap-3">
           {cards.map((c, i) => (
             <button
               key={i}
               type="button"
               aria-label="Play student testimonial"
-              className="group relative h-[28.125rem] w-[18.75rem] shrink-0 snap-start overflow-hidden rounded-xl bg-white"
+              className="group relative h-[22.5rem] w-[18.75rem] shrink-0 md:h-[28.125rem] snap-start overflow-hidden rounded-xl bg-white"
             >
               <img loading="lazy" src="/testimonials/t0.webp" alt="" className="absolute inset-0 size-full object-cover" />
               <img loading="lazy" src={`/testimonials/${c}.webp`} alt="" className="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-105" />
-              <span className="absolute top-[12.6875rem] left-[7.625rem] flex size-[3.5625rem] items-center justify-center rounded-full border-[0.5px] border-white bg-white/20 p-2.5 backdrop-blur-sm transition group-hover:bg-white/35">
+              <span className="absolute top-1/2 left-1/2 flex -translate-1/2 md:top-[12.6875rem] md:left-[7.625rem] md:translate-0 size-[3.5625rem] items-center justify-center rounded-full border-[0.5px] border-white bg-white/20 p-2.5 backdrop-blur-sm transition group-hover:bg-white/35">
                 <img loading="lazy" src="/icons/play.svg" alt="" className="size-6" />
               </span>
             </button>
