@@ -35,10 +35,10 @@ export default function DestinationTabs({ abroad, india }: { abroad: Card[]; ind
           </button>
         ))}
       </div>
-      <div className={`grid w-full gap-x-5 gap-y-[2.3125rem] sm:grid-cols-2 ${tab === "abroad" ? "lg:grid-cols-4" : "max-w-[72.8125rem] lg:grid-cols-3"}`}>
+      <div className={`grid w-full grid-cols-2 gap-x-3 gap-y-6 md:gap-x-5 md:gap-y-[2.3125rem] ${tab === "abroad" ? "lg:grid-cols-4" : "max-w-[72.8125rem] lg:grid-cols-3"}`}>
         {cards.map((c) => (
-          <Link key={c.name} href={c.href} className="group flex flex-col items-center gap-6">
-            <div className="relative h-[17.5625rem] w-full overflow-hidden rounded-3xl">
+          <Link key={c.name} href={c.href} className="group flex flex-col items-center gap-3 md:gap-6">
+            <div className="relative h-[8.75rem] w-full overflow-hidden rounded-2xl sm:h-[12rem] md:h-[17.5625rem] md:rounded-3xl">
               <img
                 loading="lazy"
                 src={c.image}
@@ -46,8 +46,8 @@ export default function DestinationTabs({ abroad, india }: { abroad: Card[]; ind
                 className="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-105"
               />
             </div>
-            <span className="flex items-center gap-2 text-h6 font-semibold text-ink group-hover:text-royal">
-              {c.flag && <img loading="lazy" src={c.flag} alt="" className="size-[1.5625rem]" />}
+            <span className="flex items-center gap-2 text-center text-sm font-semibold text-ink group-hover:text-royal md:text-h6">
+              {c.flag && <img loading="lazy" src={c.flag} alt="" className="size-5 shrink-0 md:size-[1.5625rem]" />}
               {c.name}
             </span>
           </Link>

@@ -133,6 +133,38 @@
   }
 }
 
+/*
+ * Phones only (< 48rem): turns a card grid or stack into a swipeable row that
+ * bleeds to the screen edges, with the next card peeking in. Tablet and desktop
+ * layouts are untouched. Set `--rail-item` to change the card width.
+ */
+@utility mobile-rail {
+  @media (width < 48rem) {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter, 1rem);
+    width: calc(100% + 2 * var(--gutter, 1rem)) !important;
+    max-width: none !important;
+    margin-inline: calc(-1 * var(--gutter, 1rem)) !important;
+    padding-inline: var(--gutter, 1rem) !important;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+    /* `contents` wrappers pass the sizing on to the card inside them. */
+    & > *, & > .contents > * {
+      flex: 0 0 var(--rail-item, 80%) !important;
+      width: auto !important;
+      min-width: 0;
+      scroll-snap-align: start;
+    }
+  }
+}
+
 /* Fixed-shape promos use their own frame width on phones and tablets. */
 .promo-tile { container-type: inline-size; }
 .promo-tile-copy { gap: clamp(0.625rem, 2.47cqw, 1.1875rem); }

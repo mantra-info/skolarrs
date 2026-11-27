@@ -38,11 +38,11 @@ export default function CourseTabs({ title, ug, pg }: { title: string; ug: Cours
             </button>
           ))}
         </div>
-        <div ref={row} className="no-scrollbar flex w-full snap-x gap-5 overflow-x-auto">
+        <div ref={row} className="no-scrollbar mobile-rail flex w-full snap-x gap-5 overflow-x-auto [--rail-item:80%] max-md:gap-3">
           {courses.map((c) => (
             <div
               key={c.title}
-              className="flex h-[19.875rem] w-[18.75rem] shrink-0 snap-start flex-col items-start justify-between rounded-3xl border-[0.5px] border-[#d6d6d6] bg-[#f1f1f1] px-5 py-6 md:w-[23.4375rem]"
+              className="flex h-[19.875rem] w-[18.75rem] shrink-0 snap-start flex-col items-start justify-between rounded-3xl max-md:h-auto max-md:gap-5 max-md:min-h-[19.875rem] border-[0.5px] border-[#d6d6d6] bg-[#f1f1f1] px-5 py-6 md:w-[23.4375rem]"
             >
               <div className="flex flex-col gap-5 text-grey-500">
                 <h3 className="text-h6 font-semibold">{c.title}</h3>

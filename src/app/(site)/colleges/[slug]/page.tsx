@@ -99,15 +99,15 @@ export default async function CollegePage({ params }: Params) {
         </div>
         )}
 
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:flex lg:items-stretch lg:justify-between">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:gap-8 lg:flex lg:items-stretch lg:justify-between">
           {c.stats?.map((s, i) => (
             <div key={s.label} className="flex items-stretch gap-8">
               {i > 0 && <span className="hidden w-px bg-[#d9d9d9] lg:block" />}
-              <div className="flex items-start gap-5">
-                <img loading="lazy" src={`${C}/icon-stat.svg`} alt="" className="size-[3.25rem] shrink-0" />
+              <div className="flex items-start gap-2 sm:gap-5">
+                <img loading="lazy" src={`${C}/icon-stat.svg`} alt="" className="size-8 shrink-0 sm:size-[3.25rem]" />
                 <div>
-                  <p className="text-[2rem]/10 font-bold tracking-[-0.01875rem] text-ink md:text-h3">{s.value}</p>
-                  <p className="text-h6 text-[#777]">{s.label}</p>
+                  <p className="text-[1.625rem]/8 font-bold tracking-[-0.01875rem] text-ink sm:text-[2rem]/10 md:text-h3">{s.value}</p>
+                  <p className="text-sm text-[#777] sm:text-h6">{s.label}</p>
                 </div>
               </div>
             </div>
@@ -122,12 +122,12 @@ export default async function CollegePage({ params }: Params) {
             Engineering education combines mathematics, science, technology, creativity, and practical problem-solving to prepare students for real-world
             challenges.
           </p>
-          <div className="grid w-full gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mobile-rail grid w-full gap-5 [--rail-item:85%] max-md:gap-3 md:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f) => (
-              <div key={f.title} className="flex gap-6 rounded-[2rem] border-[0.5px] border-[#ccd2dc] bg-[rgba(247,248,249,0.09)] px-7 py-6">
+              <div key={f.title} className="flex gap-6 rounded-[2rem] border-[0.5px] border-[#ccd2dc] bg-[rgba(247,248,249,0.09)] px-7 py-6 max-md:gap-4 max-md:px-5">
                 <img loading="lazy" src={`${C}/icons/${f.icon}.webp`} alt="" className="size-[3.75rem] shrink-0 md:size-20" />
-                <div className="flex flex-col gap-6">
-                  <h3 className="text-h5 font-semibold text-white">{f.title}</h3>
+                <div className="flex flex-col gap-6 max-md:min-w-0 max-md:gap-3">
+                  <h3 className="text-h5 font-semibold text-white max-md:text-xl max-md:[overflow-wrap:anywhere]">{f.title}</h3>
                   <p className="text-label text-[#cecece]">{f.body}</p>
                 </div>
               </div>
@@ -180,7 +180,7 @@ export default async function CollegePage({ params }: Params) {
               stress-free and on time.
             </p>
           </div>
-          <div className="no-scrollbar flex snap-x gap-6 overflow-x-auto">
+          <div className="no-scrollbar mobile-rail flex snap-x gap-6 overflow-x-auto [--rail-item:85%] max-md:gap-3">
             {c.reviews.map((r) => (
               <figure key={r.name} className="flex w-[20rem] shrink-0 snap-start flex-col gap-7 rounded-2xl bg-[#e9f2ff] p-5 md:w-[29rem]">
                 <div className="flex items-center gap-1 text-h6 font-medium text-ink">

@@ -11,7 +11,7 @@ export default function TrendingCourses({ home }: { home: HomeDoc }) {
     <section className="bg-surface py-16 md:py-20">
       <div className="container-x flex flex-col items-center gap-12">
         <h2 className="text-center text-[1.875rem]/[2.375rem] font-bold tracking-[-0.01875rem] text-ink md:text-h3">{home.coursesTitle}</h2>
-        <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mobile-rail grid w-full grid-cols-1 gap-3 [--rail-item:72%] sm:grid-cols-2 lg:grid-cols-5">
           {courses.map((c) => (
             <Link
               key={c._key}
@@ -19,7 +19,7 @@ export default function TrendingCourses({ home }: { home: HomeDoc }) {
               className="group flex flex-col overflow-hidden rounded-xl transition hover:-translate-y-1 lg:h-[28.4375rem]"
               style={{ backgroundColor: c.color ?? "#0057db" }}
             >
-              <div className="relative h-[17.0625rem] shrink-0 overflow-hidden" style={{ background: c.photoBackground ?? "transparent" }}>
+              <div className="relative h-[12.5rem] shrink-0 overflow-hidden md:h-[17.0625rem]" style={{ background: c.photoBackground ?? "transparent" }}>
                 {c.photo && <img loading="lazy" src={img(c.photo, 700)} alt="" className="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-105" />}
               </div>
               <div className="flex flex-1 flex-col justify-between gap-6 p-5">

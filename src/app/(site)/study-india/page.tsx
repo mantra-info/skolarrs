@@ -87,7 +87,7 @@ export default async function StudyIndiaPage() {
           <p className="text-center text-base text-[#3c3c3c] md:text-h6">
             India combines academic excellence, affordability, cultural diversity, and growing career opportunities to create a rewarding experience for students.
           </p>
-          <div className="grid w-full gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mobile-rail grid w-full gap-5 [--rail-item:80%] max-md:gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {WHY.map((w) => (
               <div key={w.title} className="relative flex min-h-[28rem] flex-col">
                 <div className="relative h-[12.875rem] overflow-hidden rounded-t-2xl">
@@ -114,7 +114,7 @@ export default async function StudyIndiaPage() {
         <p className="text-center text-base text-[#3c3c3c] md:text-h6">
           India combines academic excellence, affordability, cultural diversity, and growing career opportunities to create a rewarding experience for students.
         </p>
-        <div className="grid w-full gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mobile-rail grid w-full gap-5 [--rail-item:82%] max-md:gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {courses.map((c) => (
             <div key={c.title} className="relative flex min-h-[25.6875rem] flex-col items-start justify-between gap-10 overflow-hidden rounded-2xl p-6" style={{ backgroundColor: c.color }}>
               {ART[c.slug] && <VectorIcon layers={ART[c.slug]} className="absolute! top-6 left-[14.0625rem] h-[13.5rem] w-[13.4375rem]" />}

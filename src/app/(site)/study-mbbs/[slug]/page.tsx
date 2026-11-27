@@ -54,7 +54,7 @@ export default async function MbbsDestinationPage({ params }: Params) {
         <section className="bg-secondary-gradient py-16 md:py-20">
           <div className="container-x flex flex-col gap-12">
             <h2 className="text-[1.875rem]/[2.375rem] font-semibold tracking-[-0.01875rem] text-ink md:text-h3">Tuition Fee Range</h2>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mobile-rail grid gap-5 [--rail-item:85%] max-md:gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {d.fees.map((q, i) => (
                 <div key={q.title} className="flex flex-col gap-6 rounded-2xl border-[0.5px] border-[#cecece] bg-white p-6">
                   <div className="flex items-center gap-2">
